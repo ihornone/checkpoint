@@ -1,0 +1,34 @@
+---
+import type { Dish } from '../types/menu.types';
+import { getSpriteCoordinates } from '@/shared/utils/sprite';
+
+export interface Props {
+  dish: Dish;
+  loading?: 'lazy' | 'eager';
+  class?: string;
+}
+
+const { dish, loading = 'lazy', class: customClass = '' } = Astro.props;
+const index = dish.sprite ?? -1;
+const coords = getSpriteCoordinates(index);
+const row = Math.floor(index / 4);
+const spriteStyle = `--sprite-x: ${coords.x}; --sprite-y: ${coords.y};`;
+---
+
+{index >= 0 ? (
+  <span
+    class:list={['food-visual food-sprite aspect-[4/3] w-full', `sprite-row-${row}`, customClass]}
+    role="img"
+    aria-label={dish.name}
+    style={spriteStyle}
+  />
+) : (
+  <img
+    class:list={['food-visual aspect-[4/3] w-full object-cover', customClass]}
+    src={`/images/${dish.image}.webp`}
+    alt={dish.name}
+    loading={loading}
+    width="400"
+    height="300"
+  />
+)}

@@ -1,0 +1,51 @@
+---
+import Logo from '@/shared/components/ui/Logo.astro';
+import Icon from '@/shared/components/ui/Icon.astro';
+import SocialLinks from '@/shared/components/layout/SocialLinks.astro';
+import { Routes } from '@/shared/constants/routes';
+import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
+
+const FOOTER_NAV_LINKS = [
+  { href: Routes.MENU, label: 'Меню' },
+  { href: Routes.DELIVERY, label: 'Доставка' },
+  { href: Routes.CONTACTS, label: 'Контакти' },
+  { href: Routes.REVIEWS, label: 'Відгуки' },
+  { href: Routes.OFFERS, label: 'Акції' },
+  { href: Routes.ABOUT, label: 'Про нас' },
+] as const;
+---
+
+<footer class="rounded-t-2xl border-t border-line bg-ink/85 py-8 sm:py-10">
+  <div class="mx-auto w-full max-w-[90rem] px-4 sm:px-8 lg:px-12">
+    <div class="flex flex-col gap-6 border-b border-white/10 pb-7 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+      <Logo />
+      <nav class="flex flex-wrap gap-x-5 gap-y-3 text-sm font-bold text-white/65" aria-label="Посилання у підвалі">
+        {FOOTER_NAV_LINKS.map(({ href, label }) => (
+          <a class="hover:text-brand" href={href}>{label}</a>
+        ))}
+      </nav>
+      <a
+        href={Routes.MENU}
+        class="inline-flex min-h-11 items-center gap-2 self-start rounded-xl border border-white/15 px-4 text-sm font-bold text-paper transition hover:border-brand hover:text-brand"
+      >
+        Обрати щось смачне <Icon name="arrow" size={18} />
+      </a>
+    </div>
+    <div class="grid gap-4 border-b border-white/10 py-6 text-xs leading-5 text-white/45 sm:grid-cols-2">
+      <p class="mb-0">
+        <b class="text-white/75">Контакти</b><br />
+        {RESTAURANT_CONTACTS.phone} · {RESTAURANT_CONTACTS.workingHours}
+      </p>
+      <div class="mb-0">
+        <b class="text-white/75">Соцмережі</b>
+        <div class="mt-2">
+          <SocialLinks />
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-wrap items-center justify-between gap-3 pt-5 text-xs text-white/40">
+      <span>© 2026 {RESTAURANT_CONTACTS.name}</span>
+      <a class="hover:text-brand" href={Routes.PRIVACY}>Конфіденційність</a>
+    </div>
+  </div>
+</footer>

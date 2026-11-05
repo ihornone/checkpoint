@@ -1,0 +1,73 @@
+<script>
+  import { STORAGE_KEYS } from '@/shared/constants/storage';
+  import { CUSTOM_EVENTS } from '@/shared/constants/events';
+
+  const searchParams = new URLSearchParams(location.search);
+  const requestedCategory = searchParams.get('category');
+  const filterButtons = Array.from(document.querySelectorAll<HTMLElement>('[data-filter]'));
+  let category = filterButtons.some((button) => button.dataset.filter === requestedCategory)
+    ? requestedCategory!
+    : 'Піца';
+  let onlyFavorites = searchParams.get('favorites') === '1';
+
+  const search = document.querySelector<HTMLInputElement>('#search');
+  const emptyState = document.querySelector<HTMLElement>('#no-results');
+
+  if (search) search.value = searchParams.get('q') || '';
+  document.querySelector('#favorites-filter')?.setAttribute('aria-pressed', String(onlyFavorites));
+
+  function paintFilterButton(button: HTMLElement, selected: boolean) {
+    button.classList.toggle('selected', selected);
+    button.classList.toggle('border-brand', selected);
+    button.classList.toggle('bg-brand/10', selected);
+    button.classList.toggle('text-brand', selected);
+    button.classList.toggle('bg-white/[0.03]', !selected);
+    button.classList.toggle('hover:bg-white/[0.06]', !selected);
+    button.classList.toggle('hover:border-white/20', !selected);
+    button.classList.toggle('border-white/10', !selected);
+    button.classList.toggle('text-white/75', !selected);
+    button.setAttribute('aria-pressed', String(selected));
+  }
+
+  filterButtons.forEach((button) => paintFilterButton(button, button.dataset.filter === category));
+
+  function filterDishes() {
+    let visibleCount = 0;
+    let favorites: string[] = [];
+
+    try {
+      favorites = JSON.parse(localStorage.getItem(STORAGE_KEYS.FAVORITES) || '[]');
+    } catch {
+      favorites = [];
+    }
+
+    document.querySelectorAll<HTMLElement>('.filter-grid .food-card').forEach((card) => {
+      const matchesCategory = category === 'Усе меню' || card.dataset.category === category;
+      const matchesSearch = card.dataset.name!.includes((search?.value || '').toLowerCase().trim());
+      const matchesFavorites = !onlyFavorites || favorites.includes(card.dataset.id!);
+      const isVisible = matchesCategory && matchesSearch && matchesFavorites;
+
+      if (isVisible) visibleCount += 1;
+      card.hidden = !isVisible;
+    });
+
+    if (emptyState) emptyState.hidden = visibleCount > 0;
+  }
+
+  filterButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      category = button.dataset.filter!;
+      filterButtons.forEach((item) => paintFilterButton(item, item === button));
+      filterDishes();
+    });
+  });
+
+  search?.addEventListener('input', filterDishes);
+  document.querySelector('#favorites-filter')?.addEventListener('click', (event) => {
+    onlyFavorites = !onlyFavorites;
+    (event.currentTarget as HTMLElement).setAttribute('aria-pressed', String(onlyFavorites));
+    filterDishes();
+  });
+  window.addEventListener(CUSTOM_EVENTS.FAVORITES_UPDATED, filterDishes);
+  filterDishes();
+</script>

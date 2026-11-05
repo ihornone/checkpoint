@@ -1,0 +1,37 @@
+---
+import { SOCIAL_LINKS } from '@/shared/constants/socials';
+
+export interface Props {
+  class?: string;
+  itemClass?: string;
+  iconClass?: string;
+}
+
+const {
+  class: className = 'flex flex-wrap gap-2',
+  itemClass = 'grid size-10 place-items-center rounded-xl border border-white/15 bg-white/5 transition hover:-translate-y-0.5 hover:border-brand',
+  iconClass = 'size-5',
+} = Astro.props;
+---
+
+<div class={className}>
+  {SOCIAL_LINKS.map((social) => (
+    <a
+      class={itemClass}
+      href={social.href}
+      aria-label={social.name}
+      title={social.name}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <img
+        class={iconClass}
+        src={`/${social.id}.svg`}
+        alt=""
+        width="20"
+        height="20"
+        loading="lazy"
+      />
+    </a>
+  ))}
+</div>

@@ -1,0 +1,27 @@
+---
+import { Star } from 'lucide-react';
+import type { ReviewItem } from '../types/reviews.types';
+
+export interface Props {
+  review: ReviewItem;
+}
+
+const { review } = Astro.props;
+---
+
+<article class="review-card overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]" data-review-category={review.category}>
+  <img class="aspect-[4/3] w-full object-cover" src={review.image} alt={review.imageAlt} width="400" height="300" loading="lazy" />
+  <div class="p-5 sm:p-6">
+    <div class="mb-4 flex items-center gap-3">
+      <span class="grid size-11 shrink-0 place-items-center rounded-full bg-brand/10 text-base font-black text-brand">{review.initial}</span>
+      <div class="min-w-0">
+        <h3 class="mb-0 truncate text-base font-extrabold text-paper">{review.name}</h3>
+        <span class="text-xs text-white/50">{review.categoryLabel}</span>
+      </div>
+      <span class="ml-auto inline-flex items-center gap-0.5 text-brand" aria-label="5 із 5 зірок">
+        {Array.from({ length: 5 }, () => <Star size={15} fill="currentColor" />)}
+      </span>
+    </div>
+    <p class="mb-0 text-sm leading-6 text-white/70">{review.text}</p>
+  </div>
+</article>

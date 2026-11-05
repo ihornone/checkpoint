@@ -1,0 +1,16 @@
+---
+import { Routes } from '@/shared/constants/routes';
+
+export interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<a class:list={['logo inline-flex shrink-0 items-center text-brand transition hover:brightness-110', className]} href={Routes.HOME} aria-label="CHECK POINT — головна">
+  <span class="logo-type rounded-xl border-2 border-current px-2 py-1 font-display text-xl font-black leading-[0.9] tracking-wide sm:text-[1.35rem]">
+    CHECK<br />POINT
+    <small class="mt-1 block text-center font-sans text-[6px] font-bold tracking-[0.14em]">COFFEE & FOOD</small>
+  </span>
+</a>

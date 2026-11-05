@@ -1,0 +1,188 @@
+---
+import '@/styles/global.css';
+import Header from '@/shared/components/layout/Header.astro';
+import Footer from '@/shared/components/layout/Footer.astro';
+import CartDrawer from '@/features/cart/components/CartDrawer';
+import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
+
+export interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Більше ніж просто їжа',
+  description = `${RESTAURANT_CONTACTS.name} — соковиті бургери, хрустка піца, свіжі салати та ароматна кава. Обирай свій смак.`,
+} = Astro.props;
+---
+<!doctype html>
+<html lang="uk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#090909" />
+    <title>{title} · {RESTAURANT_CONTACTS.name}</title>
+    <link rel="icon" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600;1,700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="min-w-[280px] bg-ink font-sans text-paper antialiased selection:bg-brand selection:text-ink">
+    <Header />
+
+    <main class="min-w-0 overflow-x-clip"><slot /></main>
+
+    <Footer />
+
+    <CartDrawer client:load />
+    <div class="pointer-events-none fixed bottom-5 left-1/2 z-[100] -translate-x-1/2 translate-y-4 rounded-xl bg-brand px-5 py-3 text-sm font-extrabold text-ink opacity-0 transition" id="toast" role="status"></div>
+
+    <script>
+      import { CUSTOM_EVENTS } from '@/shared/constants/events';
+      import { STORAGE_KEYS } from '@/shared/constants/storage';
+
+      // 1. Global Add-to-cart and Drawer open delegation
+      document.addEventListener('click', (event) => {
+        const addButton = (event.target as HTMLElement).closest<HTMLElement>('[data-add]');
+        if (!addButton) return;
+        document.dispatchEvent(new CustomEvent(CUSTOM_EVENTS.CART_ADD, { detail: addButton.dataset.add }));
+        const toast = document.querySelector('#toast')!;
+        toast.textContent = 'Смачно! Додано до кошика';
+        toast.classList.remove('translate-y-4', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+        setTimeout(() => {
+          toast.classList.remove('translate-y-0', 'opacity-100');
+          toast.classList.add('translate-y-4', 'opacity-0');
+        }, 2200);
+      });
+
+      document.querySelector('#cart-open')?.addEventListener('click', () => {
+        document.documentElement.dataset.cartRequested = 'true';
+        document.dispatchEvent(new CustomEvent(CUSTOM_EVENTS.CART_OPEN));
+      });
+
+      document.querySelector('#nav-toggle')?.addEventListener('click', (event) => {
+        const isOpen = document.querySelector('#navigation')?.classList.toggle('open');
+        (event.currentTarget as HTMLElement).setAttribute('aria-expanded', String(isOpen));
+      });
+
+      // 2. Favorites synchronization
+      let favorites: string[] = [];
+      try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEYS.FAVORITES) || '[]');
+        if (Array.isArray(saved)) favorites = saved.filter((item) => typeof item === 'string');
+      } catch {
+        favorites = [];
+      }
+
+      function paintFavorites() {
+        document.querySelectorAll<HTMLButtonElement>('[data-favorite]').forEach((button) => {
+          const active = favorites.includes(button.dataset.favorite!);
+          button.classList.toggle('is-favorite', active);
+          button.setAttribute('aria-pressed', String(active));
+        });
+      }
+
+      paintFavorites();
+      document.addEventListener('click', (event) => {
+        const button = (event.target as HTMLElement).closest<HTMLButtonElement>('[data-favorite]');
+        if (!button) return;
+        const id = button.dataset.favorite!;
+        favorites = favorites.includes(id) ? favorites.filter((item) => item !== id) : [...favorites, id];
+        localStorage.setItem(STORAGE_KEYS.FAVORITES, JSON.stringify(favorites));
+        paintFavorites();
+        window.dispatchEvent(new Event(CUSTOM_EVENTS.FAVORITES_UPDATED));
+      });
+
+      // 3. Navigation closure & header scroll listener
+      const closeNavigation = () => {
+        document.querySelector('#navigation')?.classList.remove('open');
+        document.querySelector('#nav-toggle')?.setAttribute('aria-expanded', 'false');
+      };
+
+      document.querySelectorAll('#navigation a').forEach((link) => link.addEventListener('click', closeNavigation));
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') closeNavigation();
+      });
+      matchMedia('(min-width:1001px)').addEventListener('change', (event) => {
+        if (event.matches) closeNavigation();
+      });
+      addEventListener('scroll', () => document.querySelector('.site-header')?.classList.toggle('scrolled', scrollY > 10), { passive: true });
+
+      // 4. Reveal animation engine
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const finish = (element: Element) => {
+          element.classList.remove('anim-hide', 'anim-load', 'is-in');
+          element.style.removeProperty('--anim-delay');
+        };
+
+        const revealElement = (element: Element) => {
+          if (!element.classList.contains('anim-hide')) return;
+          element.classList.add('is-in');
+          const delay = (Number.parseFloat(getComputedStyle(element).transitionDelay) || 0) * 1000;
+          setTimeout(() => finish(element), delay + 950);
+        };
+
+        const revealInView = () => {
+          document.querySelectorAll('.anim-hide:not(.is-in)').forEach((element) => {
+            const rect = element.getBoundingClientRect();
+            if (rect.top < innerHeight && rect.bottom > 0) revealElement(element);
+          });
+        };
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                observer.unobserve(entry.target);
+                revealElement(entry.target);
+              }
+            }
+          },
+          { threshold: 0.05, rootMargin: '0px 0px -4% 0px' },
+        );
+
+        const prepare = (element: Element, delay: number) => {
+          if (element.classList.contains('anim-hide') || element.classList.contains('anim-load') || element.classList.contains('is-in')) return;
+          const rect = element.getBoundingClientRect();
+          if (rect.top < innerHeight && rect.bottom > 0) {
+            element.classList.add('anim-load');
+            element.style.setProperty('--anim-delay', `${Math.min(delay, 240)}ms`);
+            element.addEventListener('animationend', () => finish(element), { once: true });
+          } else {
+            element.classList.add('anim-hide');
+            element.style.setProperty('--anim-delay', `${Math.min(delay, 150)}ms`);
+            observer.observe(element);
+          }
+        };
+
+        document.querySelectorAll('main article').forEach((element) => prepare(element, 0));
+
+        document.querySelectorAll('main section, footer > div').forEach((block) => {
+          Array.from(block.children).forEach((child, index) => {
+            if (child.tagName === 'ARTICLE' || child.classList.contains('anim-hide') || child.classList.contains('anim-load')) return;
+            const baseDelay = Math.min(index * 45, 180);
+            if (child.matches('[class*="grid"]')) {
+              Array.from(child.children).forEach((item, itemIndex) => prepare(item, baseDelay + Math.min((itemIndex + 1) * 35, 140)));
+            } else {
+              prepare(child, baseDelay);
+            }
+          });
+        });
+
+        addEventListener('scroll', revealInView, { passive: true });
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible') revealInView();
+        });
+
+        let sweeps = 0;
+        const sweep = setInterval(() => {
+          sweeps += 1;
+          revealInView();
+          if (sweeps >= 5) clearInterval(sweep);
+        }, 1200);
+      }
+    </script>
+  </body>
+</html>

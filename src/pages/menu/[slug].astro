@@ -1,0 +1,55 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Card, FoodPhoto, dishes } from '@/features/catalog';
+import Icon from '@/shared/components/ui/Icon.astro';
+import { Routes } from '@/shared/constants/routes';
+
+export function getStaticPaths() {
+  return dishes.map((dish) => ({ params: { slug: dish.slug }, props: { dish } }));
+}
+
+const { dish } = Astro.props;
+const related = dishes.filter((item) => item.category === dish.category && item.slug !== dish.slug).slice(0, 4);
+---
+
+<Layout title={dish.name} description={dish.description}>
+  <section class="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 sm:py-20 lg:px-12">
+    <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <div class="relative">
+        <FoodPhoto dish={dish} loading="eager" />
+        <button
+          class="favorite absolute right-0 top-0 grid size-12 place-items-center rounded-full bg-ink/80 text-white [&.is-favorite]:text-brand"
+          data-favorite={dish.slug}
+          aria-label={`В обране: ${dish.name}`}
+          aria-pressed="false"
+          type="button"
+        >
+          <Icon name="heart" size={26} />
+        </button>
+      </div>
+      <div>
+        <h1 class="mb-5 text-4xl font-black leading-tight text-paper sm:text-6xl">{dish.name} <span class="text-lg font-semibold text-brand sm:text-2xl">/ {dish.portion}</span></h1>
+        <p class="mb-8 text-lg leading-8 text-white/70">{dish.description}</p>
+        <div class="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+          <b class="text-3xl font-black text-paper">{dish.price} <small class="text-base font-bold text-white/50">грн</small></b>
+          <button class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink" data-add={dish.slug} type="button">Додати до кошика <Icon name="cart" size={21} /></button>
+        </div>
+        <div class="divide-y divide-white/10 rounded-2xl border border-white/10 px-5">
+          <details class="py-4" open><summary class="cursor-pointer font-extrabold text-paper">Що всередині</summary><p class="mb-0 mt-3 leading-7 text-white/65">{dish.ingredients}.</p></details>
+          <details class="py-4"><summary class="cursor-pointer font-extrabold text-paper">Алергени</summary><p class="mb-0 mt-3 leading-7 text-white/65">{dish.allergens}. На кухні можливий перехресний контакт з іншими алергенами.</p></details>
+        </div>
+        <a class="mt-6 inline-flex items-center gap-2 text-sm font-bold text-brand" href={Routes.DELIVERY}><Icon name="scooter" size={24} /> Доставка та самовивіз →</a>
+      </div>
+    </div>
+
+    {related.length > 0 && (
+      <section class="mt-20">
+        <div class="mb-7 flex flex-wrap items-center justify-between gap-4">
+          <h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Спробуй також</h2>
+          <a href={Routes.MENU} class="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/20 px-5 font-bold text-white transition hover:border-brand hover:text-brand">Усе меню <Icon name="arrow" size={18} /></a>
+        </div>
+        <div class="cards-grid grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">{related.map((item) => <Card dish={item} />)}</div>
+      </section>
+    )}
+  </section>
+</Layout>

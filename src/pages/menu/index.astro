@@ -1,0 +1,42 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { Card, Categories, FilterScript, dishes } from '@/features/catalog';
+import Icon from '@/shared/components/ui/Icon.astro';
+import { Routes } from '@/shared/constants/routes';
+---
+
+<Layout title="Меню">
+  <section class="mx-auto w-full max-w-7xl px-5 py-14 sm:px-8 sm:py-20 lg:px-12">
+    <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div>
+        <h1 class="text-5xl font-black leading-none text-paper sm:text-7xl">Меню <span class="ml-1 inline-block translate-y-[0.18em] text-brand">⤵</span></h1>
+      </div>
+    </div>
+
+    <Categories all />
+
+    <div class="my-8 flex flex-wrap items-center gap-3">
+      <input class="min-h-12 min-w-[min(100%,16rem)] flex-1 rounded-xl border border-white/15 bg-white/[0.04] px-4 text-base text-white placeholder:text-white/40" type="search" id="search" placeholder="Знайти щось смачне…" aria-label="Пошук страв" />
+      <button class="inline-flex min-h-12 items-center gap-2 rounded-xl border border-white/15 px-5 font-bold text-white/80 transition hover:border-brand hover:text-brand" id="favorites-filter" aria-pressed="false" type="button"><Icon name="heart" size={19} /> Лише обране</button>
+    </div>
+
+    <div class="cards-grid filter-grid grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      {dishes.map((dish) => <Card dish={dish} />)}
+    </div>
+
+    <div id="no-results" class="empty-results" hidden>
+      <Icon name="pizza" size={50} />
+      <h3>Тут поки порожньо</h3>
+      <p>Асортимент цієї категорії готуємо до запуску. Спробуй іншу категорію, назву або вимкни фільтр обраного.</p>
+    </div>
+
+    <aside class="mt-14 flex flex-col gap-5 rounded-3xl border border-brand/25 bg-brand/[0.06] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-9">
+      <div>
+        <h2 class="mb-2 text-2xl font-black text-paper sm:text-3xl">На велику компанію?</h2>
+        <p class="mb-0 text-white/70">Дві піци, дві порції фрі та літр лимонаду — 699 грн.</p>
+      </div>
+      <a class="inline-flex min-h-12 shrink-0 items-center justify-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:-translate-y-0.5" href={Routes.MENU_ITEM('company-combo')}>Подивитися комбо <Icon name="arrow" size={19} /></a>
+    </aside>
+  </section>
+</Layout>
+<FilterScript />

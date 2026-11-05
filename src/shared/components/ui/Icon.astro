@@ -1,0 +1,96 @@
+---
+import {
+  ArrowRight,
+  ShoppingCart,
+  Heart,
+  MapPin,
+  Clock,
+  Phone,
+  Crown,
+  Bike,
+  Pizza,
+  Sandwich,
+  Salad,
+  CupSoda,
+  CakeSlice,
+  Star,
+  Check,
+  ShoppingBag,
+  ShieldCheck,
+  Camera,
+  Quote,
+  type LucideIcon,
+} from 'lucide-react';
+
+export type IconName =
+  | 'arrow'
+  | 'cart'
+  | 'heart'
+  | 'pin'
+  | 'clock'
+  | 'phone'
+  | 'crown'
+  | 'scooter'
+  | 'pizza'
+  | 'burger'
+  | 'salad'
+  | 'drink'
+  | 'cake'
+  | 'wrap'
+  | 'star'
+  | 'check'
+  | 'bag'
+  | 'shield'
+  | 'instagram'
+  | 'quote';
+
+export interface Props {
+  name?: IconName;
+  size?: number;
+  strokeWidth?: number;
+  class?: string;
+  className?: string;
+}
+
+const {
+  name = 'arrow',
+  size = 24,
+  strokeWidth = 1.5,
+  class: iconClass,
+  className,
+  ...attributes
+} = Astro.props;
+
+const ICONS: Record<IconName, LucideIcon> = {
+  arrow: ArrowRight,
+  cart: ShoppingCart,
+  heart: Heart,
+  pin: MapPin,
+  clock: Clock,
+  phone: Phone,
+  crown: Crown,
+  scooter: Bike,
+  pizza: Pizza,
+  burger: Sandwich,
+  salad: Salad,
+  drink: CupSoda,
+  cake: CakeSlice,
+  wrap: Sandwich,
+  star: Star,
+  check: Check,
+  bag: ShoppingBag,
+  shield: ShieldCheck,
+  instagram: Camera,
+  quote: Quote,
+};
+
+const IconComponent = ICONS[name] ?? ArrowRight;
+---
+
+<IconComponent
+  size={size}
+  strokeWidth={strokeWidth}
+  aria-hidden="true"
+  className={className ?? iconClass}
+  {...attributes}
+/>

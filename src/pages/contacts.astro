@@ -1,0 +1,117 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import SocialLinks from '@/shared/components/layout/SocialLinks.astro';
+import PromoBanner from '@/shared/components/ui/PromoBanner.astro';
+import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
+import {
+  ArrowRight,
+  Clock,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Navigation,
+  Phone,
+  UserRound,
+} from 'lucide-react';
+
+const contacts = [
+  { icon: MapPin, title: 'Зручне розташування', text: RESTAURANT_CONTACTS.address },
+  { icon: Clock, title: 'Графік роботи', text: RESTAURANT_CONTACTS.workingHoursMultiline },
+  { icon: Phone, title: 'Телефон', text: RESTAURANT_CONTACTS.phone },
+  { icon: Mail, title: 'Email', text: RESTAURANT_CONTACTS.email },
+];
+---
+
+<Layout title="Контакти" description="Завітай до CHECK POINT або замовляй онлайн. Ми завжди на зв’язку та раді твоїм запитанням.">
+  <div class="mx-auto w-full max-w-7xl px-5 pb-12 sm:px-8 lg:px-12">
+    <section class="grid items-center gap-10 py-12 sm:py-16 lg:min-h-[34rem] lg:grid-cols-2 lg:gap-16">
+      <div>
+        <h1 class="mb-6 text-5xl font-black leading-[0.98] tracking-tight text-paper sm:text-7xl">Контакти<span class="text-brand">.</span></h1>
+        <p class="mb-8 max-w-lg text-xl leading-8 text-white/70">Завітай до нас або замовляй онлайн! Ми завжди на зв’язку та раді твоїм запитанням.</p>
+        <div class="flex flex-wrap gap-3">
+          <a class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-5 py-3 font-extrabold text-ink" href={RESTAURANT_CONTACTS.phoneTel}><Phone size={22} /> Зателефонувати <ArrowRight size={20} /></a>
+          <a class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/20 px-5 py-3 font-bold text-paper transition hover:border-brand hover:text-brand" href="#write-us"><MessageCircle size={22} /> Написати нам</a>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="absolute -inset-3 -rotate-3 rounded-3xl border border-brand/45"></div>
+        <img class="relative aspect-[4/3] w-full rounded-3xl object-cover" src="/images/contacts-exterior.png" alt="Фасад CHECK POINT із затишною терасою" fetchpriority="high" width="600" height="450" />
+      </div>
+    </section>
+
+    <section id="contact-details" class="grid overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] sm:grid-cols-2 lg:grid-cols-4" aria-label="Контактна інформація">
+      {contacts.map(({ icon: Icon, title, text }) => (
+        <div class="flex items-start gap-4 border-b border-white/10 p-5 last:border-0 sm:border-r lg:border-b-0 lg:p-6">
+          <Icon className="shrink-0 text-brand" size={32} strokeWidth={1.5} />
+          <div>
+            <h2 class="mb-2 text-base font-extrabold text-paper">{title}</h2>
+            <p class="mb-0 whitespace-pre-line text-sm leading-6 text-white/60">{text}</p>
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section class="grid gap-8 py-16 sm:py-20 lg:grid-cols-[0.8fr_1.2fr_0.8fr] lg:items-center">
+      <div>
+        <h2 class="mb-5 text-3xl font-black text-paper">Де нас знайти?</h2>
+        <p class="leading-7 text-white/70"><b class="text-brand">м. Львів</b>, вул. Київська, 36</p>
+        <p class="leading-7 text-white/70">Поруч зупинка «Київська» — 3 хв пішки</p>
+        <p class="mb-6 leading-7 text-white/70">Для відвідувачів є паркування</p>
+        <a href={RESTAURANT_CONTACTS.googleMapsUrl} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-5 py-3 font-extrabold text-ink"><Navigation size={21} /> Прокласти маршрут <ArrowRight size={20} /></a>
+      </div>
+      <img class="mx-auto max-h-80 w-full object-contain" src="/delivery-map.svg" alt="Схема розташування CHECK POINT у Львові" width="600" height="400" />
+      <div class="grid gap-3">
+        {[
+          { icon: MapPin, title: 'Адреса', text: RESTAURANT_CONTACTS.address },
+          { icon: Clock, title: 'Графік роботи', text: RESTAURANT_CONTACTS.workingHours },
+          { icon: Phone, title: 'Телефон', text: RESTAURANT_CONTACTS.phone },
+          { icon: Mail, title: 'Email', text: RESTAURANT_CONTACTS.email },
+        ].map(({ icon: Icon, title, text }) => (
+          <div class="flex items-center gap-3 rounded-xl border border-white/10 p-3">
+            <span class="grid size-7 shrink-0 place-items-center rounded-xl bg-brand text-ink"><Icon size={15} strokeWidth={2} /></span>
+            <p class="mb-0 text-sm leading-5 text-white/60"><b class="block text-paper">{title}</b>{text}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <section class="grid gap-10 lg:grid-cols-2 lg:gap-16">
+      <div class="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-9" id="write-us">
+        <h2 class="mb-3 text-3xl font-black text-paper">Напиши нам</h2>
+        <p class="mb-7 text-white/60">Є питання, пропозиції чи відгук? Заповни форму — ми обов’язково відповімо!</p>
+        <form class="grid gap-4" id="contact-form">
+          <label class="grid gap-2 text-sm font-bold text-white/75"><span class="inline-flex items-center gap-2"><UserRound size={18} /> Твоє ім’я</span><input class="min-h-12 rounded-xl border border-white/15 bg-ink/60 px-4 text-base" name="name" required autocomplete="name" placeholder="Твоє ім’я" maxlength="100" /></label>
+          <label class="grid gap-2 text-sm font-bold text-white/75"><span class="inline-flex items-center gap-2"><Mail size={18} /> Твій Email</span><input class="min-h-12 rounded-xl border border-white/15 bg-ink/60 px-4 text-base" name="email" required type="email" autocomplete="email" placeholder="Твій Email" maxlength="254" /></label>
+          <label class="grid gap-2 text-sm font-bold text-white/75"><span class="inline-flex items-center gap-2"><MessageCircle size={18} /> Твоє повідомлення</span><textarea class="rounded-xl border border-white/15 bg-ink/60 p-4 text-base" name="message" required placeholder="Твоє повідомлення" rows="3" maxlength="3000"></textarea></label>
+          <button class="inline-flex min-h-12 items-center justify-center gap-3 rounded-xl bg-brand px-5 py-3 font-extrabold text-ink" type="submit">Надіслати повідомлення <ArrowRight size={20} /></button>
+          <p class="mb-0 text-xs leading-5 text-white/40" id="contact-status" role="status"></p>
+        </form>
+      </div>
+
+      <div class="flex flex-col justify-center">
+        <h2 class="mb-4 text-3xl font-black text-paper sm:text-4xl">Ми в соціальних мережах</h2>
+        <p class="mb-6 text-white/60">Слідкуй за новинками, акціями та новими стравами!</p>
+        <SocialLinks itemClass="grid size-14 place-items-center rounded-xl border border-white/15 bg-white/5 transition hover:-translate-y-0.5 hover:border-brand" iconClass="size-7" />
+        <div class="relative mt-4 overflow-hidden rounded-3xl">
+          <img class="aspect-[3/2] w-full object-contain" src="/images/contacts-food.png" alt="Бургер CHECK POINT, золотиста картопля фрі та свіжі томати" loading="lazy" width="600" height="400" />
+        </div>
+      </div>
+    </section>
+
+    <PromoBanner class="mt-10" />
+  </div>
+</Layout>
+
+<script>
+  const contactForm = document.querySelector<HTMLFormElement>('#contact-form');
+  const contactStatus = document.querySelector<HTMLElement>('#contact-status');
+
+  contactForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (contactStatus) {
+      contactStatus.textContent = 'Дякуємо! Твоє повідомлення надіслано. Ми відповімо найближчим часом.';
+      contactStatus.className = 'mb-0 text-xs leading-5 text-brand';
+    }
+    contactForm.reset();
+  });
+</script>

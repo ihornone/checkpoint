@@ -1,0 +1,64 @@
+---
+import Logo from '@/shared/components/ui/Logo.astro';
+import Icon from '@/shared/components/ui/Icon.astro';
+import { MAIN_NAV_ITEMS } from '@/shared/constants/routes';
+import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
+
+export interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = Astro.url.pathname } = Astro.props;
+---
+
+<header class="site-header sticky top-0 z-50 h-[4.5rem] rounded-b-2xl border-b border-brand bg-ink sm:h-[5rem]">
+  <div class="mx-auto flex h-full w-full max-w-[90rem] items-center justify-between gap-3 px-4 sm:px-8 lg:px-12">
+    <Logo />
+    <nav
+      id="navigation"
+      class="absolute left-3 right-3 top-full z-50 mt-2 hidden max-h-[calc(100dvh-4.5rem)] flex-col overflow-y-auto rounded-2xl border border-white/10 bg-ink/95 p-2 shadow-2xl shadow-black/60 backdrop-blur min-[1001px]:static min-[1001px]:mt-0 min-[1001px]:flex min-[1001px]:max-h-none min-[1001px]:flex-row min-[1001px]:items-center min-[1001px]:gap-1 min-[1001px]:overflow-visible min-[1001px]:rounded-none min-[1001px]:border-0 min-[1001px]:bg-transparent min-[1001px]:p-0 min-[1001px]:shadow-none min-[1001px]:backdrop-blur-none [&.open]:flex"
+      aria-label="Головна навігація"
+    >
+      {MAIN_NAV_ITEMS.map(({ href, label }) => {
+        const isCurrent = href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+        return (
+          <a
+            href={href}
+            class="flex min-h-12 items-center justify-between gap-3 rounded-xl px-4 text-sm font-bold uppercase tracking-wide text-white/75 transition hover:bg-white/5 hover:text-brand aria-[current=page]:bg-brand/10 aria-[current=page]:text-brand min-[1001px]:min-h-0 min-[1001px]:px-3 min-[1001px]:py-1.5"
+            aria-current={isCurrent ? 'page' : undefined}
+          >
+            {label}
+            <span class="hidden text-brand transition aria-[current=page]:inline" aria-hidden="true">→</span>
+          </a>
+        );
+      })}
+    </nav>
+    <div class="flex shrink-0 items-center gap-1 sm:gap-2">
+      <button
+        class="relative grid size-11 place-items-center rounded-xl text-brand transition hover:bg-brand/10"
+        id="cart-open"
+        aria-label="Відкрити кошик"
+        type="button"
+      >
+        <Icon name="cart" size={27} />
+        <span class="absolute right-0 top-0 grid min-w-4 place-items-center rounded-full bg-brand px-1 text-[10px] font-black leading-4 text-ink" id="cart-count">0</span>
+      </button>
+      <a
+        class="inline-flex min-h-10 items-center rounded-xl bg-brand px-3 text-xs font-extrabold text-ink transition hover:brightness-110 sm:px-5 sm:text-sm"
+        href={RESTAURANT_CONTACTS.phoneTel}
+      >
+        {RESTAURANT_CONTACTS.phone}
+      </a>
+      <button
+        class="grid size-11 place-items-center rounded-xl text-2xl text-brand min-[1001px]:hidden"
+        id="nav-toggle"
+        aria-label="Відкрити меню"
+        aria-expanded="false"
+        aria-controls="navigation"
+        type="button"
+      >
+        ☰
+      </button>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,89 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import PromoBanner from '@/shared/components/ui/PromoBanner.astro';
+import { Routes } from '@/shared/constants/routes';
+import {
+  ArrowRight,
+  Bike,
+  BadgeCheck,
+  ChefHat,
+  Crown,
+  Heart,
+  Leaf,
+  ShieldCheck,
+} from 'lucide-react';
+
+const values = [
+  { icon: Leaf, title: 'Свіжі інгредієнти', text: 'Якісні продукти від перевірених постачальників' },
+  { icon: ChefHat, title: 'Смачні рецепти', text: 'Улюблені страви в нашому виконанні' },
+  { icon: Bike, title: 'Швидка доставка', text: 'Привозимо гарячу їжу до 60 хв' },
+  { icon: Heart, title: 'Дружня атмосфера', text: 'Комфортне місце для зустрічей' },
+  { icon: ShieldCheck, title: 'Контроль якості', text: 'Смак, свіжість та безпека на першому місці' },
+];
+---
+
+<Layout title="Про нас" description="CHECK POINT — це місце, де смачна їжа, приємна атмосфера та хороші люди зустрічаються кожного дня.">
+  <div class="mx-auto w-full max-w-7xl px-5 pb-12 sm:px-8 lg:px-12">
+    <section class="grid items-center gap-10 py-12 sm:py-16 lg:min-h-[36rem] lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+      <div>
+        <h1 class="mb-6 text-5xl font-black leading-[0.98] tracking-tight text-paper sm:text-7xl lg:text-8xl">Про нас<span class="text-brand">.</span></h1>
+        <p class="mb-8 max-w-xl text-xl leading-8 text-white/75"><strong class="text-paper">CHECK POINT</strong> — це місце, де смачна їжа, приємна атмосфера та хороші люди зустрічаються кожного дня.</p>
+        <div class="flex flex-wrap gap-3">
+          <a href={Routes.MENU} class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:-translate-y-0.5">Наше меню <ArrowRight size={22} /></a>
+          <a href={Routes.MENU} class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/20 px-6 py-3 font-bold text-paper transition hover:border-brand hover:text-brand"><Bike size={22} /> Зробити замовлення</a>
+        </div>
+        <div class="mt-10 grid grid-cols-3 divide-x divide-white/10">
+          {[
+            { icon: Crown, value: '200+', label: 'страв у меню' },
+            { icon: Heart, value: '5 000+', label: 'задоволених клієнтів' },
+            { icon: BadgeCheck, value: '2 роки', label: 'з вами' },
+          ].map(({ icon: Icon, value, label }) => (
+            <div class="flex flex-col items-center px-2 text-center first:pl-0 last:pr-0">
+              <Icon className="mb-2 text-brand" size={34} strokeWidth={1.6} />
+              <b class="text-xl font-black text-paper sm:text-2xl">{value}</b>
+              <span class="mt-1 text-xs text-white/55 sm:text-sm">{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div class="relative mx-auto w-full max-w-[30rem]">
+        <div class="absolute -inset-3 rotate-3 rounded-3xl border border-brand/50"></div>
+        <img class="relative aspect-square w-full rounded-3xl object-cover" src="/images/about-interior.png" alt="Затишний інтер’єр CHECK POINT із теплим освітленням і жовтою вивіскою" fetchpriority="high" width="480" height="480" />
+      </div>
+    </section>
+
+    <section class="grid gap-6 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-3 sm:p-5 lg:grid-cols-2 lg:items-center">
+      <img class="aspect-[4/3] w-full rounded-2xl object-cover" src="/images/about-chef.png" alt="Кухар CHECK POINT готує бургер" loading="lazy" width="600" height="450" />
+      <div class="p-4 sm:p-8">
+        <h2 class="mb-5 text-3xl font-black text-paper sm:text-4xl">Смачно — це просто</h2>
+        <p class="leading-7 text-white/70">CHECK POINT почався з простої ідеї — створити місце, де можна швидко та смачно поїсти улюблені страви: піцу, бургери, закуски та багато іншого.</p>
+        <p class="mb-0 leading-7 text-white/70">Сьогодні ми — це команда, яка щодня готує якісну їжу, розвиває сервіс і робить усе, щоб ти повертався до нас знову і знову.</p>
+      </div>
+    </section>
+
+    <section class="py-16 sm:py-20">
+      <div class="mb-8 max-w-xl">
+        <h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Чому обирають нас?</h2>
+      </div>
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        {values.map(({ icon: Icon, title, text }) => (
+          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-center transition hover:border-brand/40">
+            <Icon className="mx-auto mb-4 text-brand" size={42} strokeWidth={1.5} />
+            <h3 class="mb-2 text-lg font-extrabold leading-tight text-paper">{title}</h3>
+            <p class="mb-0 text-sm leading-6 text-white/60">{text}</p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="grid gap-6 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-3 sm:p-5 lg:grid-cols-2 lg:items-center">
+      <img class="aspect-[16/10] w-full rounded-2xl object-cover" src="/images/about-interior.png" alt="Простір CHECK POINT для смачних обідів та зустрічей" loading="lazy" width="600" height="375" />
+      <div class="p-4 sm:p-8">
+        <h2 class="mb-5 text-3xl font-black text-paper sm:text-4xl">Наша команда</h2>
+        <p class="mb-0 leading-7 text-white/70">За кожною стравою стоїть команда професіоналів, яка любить свою справу. Кухарі, кур’єри, менеджери — ми всі працюємо для того, щоб ти отримував найкращий сервіс та справді смачну їжу.</p>
+      </div>
+    </section>
+
+    <PromoBanner class="mt-8" />
+  </div>
+</Layout>

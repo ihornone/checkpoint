@@ -1,0 +1,192 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import SocialLinks from '@/shared/components/layout/SocialLinks.astro';
+import { ReviewCard, REVIEWS_DATA } from '@/features/reviews';
+import {
+  ArrowRight,
+  Bike,
+  MessageCircle,
+  PencilLine,
+  Star,
+  Store,
+  Utensils,
+} from 'lucide-react';
+
+const categories = [
+  { id: 'all', label: 'Усі відгуки', icon: MessageCircle },
+  { id: 'food', label: 'Їжа', icon: Utensils },
+  { id: 'delivery', label: 'Доставка', icon: Bike },
+  { id: 'place', label: 'Заклад', icon: Store },
+];
+---
+
+<Layout title="Відгуки" description="Враження гостей CHECK POINT та форма, щоб поділитися своєю думкою.">
+  <main class="mx-auto w-full max-w-7xl px-5 pb-12 sm:px-8 lg:px-12">
+    <section class="grid items-center gap-8 py-12 sm:py-16 lg:min-h-[34rem] lg:grid-cols-2 lg:gap-12">
+      <div>
+        <h1 class="mb-5 text-5xl font-black leading-[0.98] tracking-tight text-paper sm:text-7xl">Відгуки<br />наших гостей<span class="text-brand">.</span></h1>
+        <p class="mb-7 max-w-lg text-xl leading-8 text-white/75">Ми цінуємо кожне враження й стаємо кращими завдяки тобі.</p>
+        <div class="flex flex-wrap gap-3">
+          <a class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-5 py-3 font-extrabold text-ink transition hover:bg-amber-400" href="#review-form">
+            <PencilLine size={20} /> Залишити відгук <ArrowRight size={19} />
+          </a>
+          <a class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/20 px-5 py-3 font-bold text-paper transition hover:border-brand hover:text-brand" href="#reviews">
+            <Star size={20} /> Усі відгуки
+          </a>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="absolute -inset-3 -rotate-3 rounded-3xl border border-brand/45"></div>
+        <img
+          class="relative aspect-[4/3] w-full rotate-2 rounded-3xl object-cover"
+          src="/images/about-interior.png"
+          alt="Затишний інтер’єр CHECK POINT"
+          fetchpriority="high"
+          width="600"
+          height="450"
+        />
+      </div>
+    </section>
+
+    <section class="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="Про що розповідають гості">
+      <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+        <Star className="shrink-0 text-brand" size={27} strokeWidth={1.6} />
+        <span class="text-sm font-bold text-paper">Їжа</span>
+      </div>
+      <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+        <Bike className="shrink-0 text-brand" size={27} strokeWidth={1.6} />
+        <span class="text-sm font-bold text-paper">Доставка</span>
+      </div>
+      <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+        <Store className="shrink-0 text-brand" size={27} strokeWidth={1.6} />
+        <span class="text-sm font-bold text-paper">Атмосфера</span>
+      </div>
+      <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+        <MessageCircle className="shrink-0 text-brand" size={27} strokeWidth={1.6} />
+        <span class="text-sm font-bold text-paper">Сервіс</span>
+      </div>
+    </section>
+
+    <section class="py-14 sm:py-20" id="reviews">
+      <div class="mb-6 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+        <div>
+          <h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Останні відгуки</h2>
+        </div>
+
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Фільтр відгуків">
+          {categories.map(({ id, label, icon: CategoryIcon }, index) => (
+            <button
+              class:list={[
+                'review-filter inline-flex min-h-11 items-center gap-2 rounded-xl border px-4 text-sm font-bold transition',
+                index === 0
+                  ? 'border-brand bg-brand text-ink'
+                  : 'border-white/15 text-white/75 hover:border-brand hover:text-brand',
+              ]}
+              type="button"
+              data-review-filter={id}
+              aria-pressed={index === 0}
+            >
+              <CategoryIcon size={18} /> {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {REVIEWS_DATA.map((review) => (
+          <ReviewCard review={review} />
+        ))}
+      </div>
+
+      <p class="mt-4 hidden rounded-2xl border border-white/10 p-6 text-center text-sm text-white/60" id="reviews-empty" role="status">У цій категорії поки немає відгуків.</p>
+    </section>
+
+    <section class="grid gap-6 rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-center" id="review-form">
+      <div>
+        <h2 class="mb-3 text-2xl font-black leading-tight text-paper sm:text-3xl">Залиш свій відгук</h2>
+        <div class="mb-4 flex items-center gap-3 text-brand">
+          <MessageCircle size={24} strokeWidth={1.6} />
+          <span class="text-sm font-bold text-white/70">Читаємо кожне повідомлення</span>
+        </div>
+        <p class="mb-6 max-w-md text-sm leading-6 text-white/60">Що сподобалося найбільше? Твоя думка допомагає нам ставати кращими.</p>
+        <p class="mb-2 text-sm font-bold text-white/70">Або напиши нам у соцмережах:</p>
+        <SocialLinks />
+      </div>
+
+      <form id="review-form-fields" class="grid gap-4">
+        <label class="grid gap-2 text-sm font-bold text-white/80">
+          Твоє ім’я
+          <input class="min-h-12 rounded-xl border border-white/15 bg-ink/60 px-4 text-base" name="name" required maxlength="60" placeholder="Ім’я" autocomplete="given-name" />
+        </label>
+
+        <fieldset>
+          <legend class="mb-3 text-sm font-bold text-white/80">Твоя оцінка</legend>
+          <div class="flex flex-wrap gap-2">
+            {[1, 2, 3, 4, 5].map((rating) => (
+              <label class="cursor-pointer">
+                <input class="peer sr-only" type="radio" name="rating" value={rating} required />
+                <span class="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/15 px-4 font-bold text-white/70 transition peer-checked:border-brand peer-checked:bg-brand/10 peer-checked:text-brand">
+                  {rating} <Star size={15} />
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <label class="grid gap-2 text-sm font-bold text-white/80">
+          Твоя історія
+          <textarea class="rounded-xl border border-white/15 bg-ink/60 p-4 text-base" name="message" required minlength="10" maxlength="1500" rows="4" placeholder="Що найбільше сподобалось?"></textarea>
+        </label>
+
+        <button class="inline-flex min-h-12 items-center justify-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:bg-amber-400" type="submit">
+          Надіслати відгук <ArrowRight size={19} />
+        </button>
+        <div id="review-result" class="text-sm leading-6 text-brand" role="status"></div>
+      </form>
+    </section>
+  </main>
+</Layout>
+
+<script>
+  const reviewFilters = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-review-filter]'));
+  const reviewCards = Array.from(document.querySelectorAll<HTMLElement>('[data-review-category]'));
+  const emptyState = document.querySelector<HTMLElement>('#reviews-empty');
+
+  reviewFilters.forEach((button) => {
+    button.addEventListener('click', () => {
+      const category = button.dataset.reviewFilter;
+      let visibleCount = 0;
+
+      reviewFilters.forEach((filter) => {
+        const selected = filter === button;
+        filter.setAttribute('aria-pressed', String(selected));
+        filter.classList.toggle('border-brand', selected);
+        filter.classList.toggle('bg-brand', selected);
+        filter.classList.toggle('text-ink', selected);
+        filter.classList.toggle('border-white/15', !selected);
+        filter.classList.toggle('text-white/75', !selected);
+      });
+
+      reviewCards.forEach((card) => {
+        const visible = category === 'all' || card.dataset.reviewCategory === category;
+        card.hidden = !visible;
+        if (visible) visibleCount += 1;
+      });
+
+      if (emptyState) emptyState.hidden = visibleCount > 0;
+    });
+  });
+
+  const reviewForm = document.querySelector<HTMLFormElement>('#review-form-fields');
+  const reviewResult = document.querySelector<HTMLElement>('#review-result');
+
+  reviewForm?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (reviewResult) {
+      reviewResult.textContent = 'Дякуємо за твій відгук! Ми перевіримо його перед публікацією на сайті.';
+      reviewResult.className = 'text-sm leading-6 text-brand';
+    }
+    reviewForm.reset();
+  });
+</script>
