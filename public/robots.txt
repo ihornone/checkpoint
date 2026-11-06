@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://checkpoint.food/sitemap.xml
+# Context for AI agents: /llms.txt
+# Pricing for AI agents: /pricing.md

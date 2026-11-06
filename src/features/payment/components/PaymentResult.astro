@@ -21,17 +21,17 @@ const INITIAL_CONFIG = {
   pending: {
     classes: 'bg-white/5 text-white/40',
     title: 'Перевіряємо оплату…',
-    text: 'Це займе кілька секунд. Не закривай сторінку.',
+    text: 'Отримуємо підтвердження від банку. Зазвичай це займає кілька секунд. Будь ласка, не закривай сторінку.',
   },
   success: {
     classes: 'bg-brand/15 text-brand',
     title: 'Оплата успішна!',
-    text: 'Дякуємо за замовлення! Оплату підтверджено. Кур’єр уже отримав його.',
+    text: 'Дякуємо за замовлення! Оплату підтверджено. Наша кухня вже готує твої страви, а кур’єр готується вирушати.',
   },
   failure: {
     classes: 'bg-red-500/10 text-red-400',
-    title: 'Оплату не проведено',
-    text: 'Кошти не списано. Спробуй оформити замовлення ще раз у кошику.',
+    title: 'Оплату не завершено',
+    text: 'Кошти з картки не списано. Можливо, закінчився інтернет-ліміт або виникла затримка банку. Спробуй ще раз у кошику.',
   },
 } as const;
 
@@ -85,7 +85,7 @@ const initial = INITIAL_CONFIG[state];
   const STATES = {
     pending: { icon: 'pending', classes: 'bg-white/5 text-white/40', title: 'Перевіряємо оплату…' },
     success: { icon: 'success', classes: 'bg-brand/15 text-brand', title: 'Оплата успішна!' },
-    failure: { icon: 'failure', classes: 'bg-red-500/10 text-red-400', title: 'Оплату не проведено' },
+    failure: { icon: 'failure', classes: 'bg-red-500/10 text-red-400', title: 'Оплату не завершено' },
   } as const;
 
   const section = document.querySelector<HTMLElement>('#payment-result')!;
@@ -138,20 +138,20 @@ const initial = INITIAL_CONFIG[state];
     const note = activeInvoiceId
       ? ` Рахунок ${activeInvoiceId}${order ? ` на ${order.total} грн` : ''}.`
       : '';
-    render('success', `Дякуємо за замовлення! Оплату підтверджено.${note} Кур’єр уже отримав його.`);
+    render('success', `Дякуємо за замовлення! Оплату підтверджено.${note} Наша кухня вже готує твої страви, а кур’єр готується вирушати.`);
     localStorage.removeItem(STORAGE_KEYS.LAST_ORDER);
   }
   // Handle explicit failure route
   else if (initialState === 'failure') {
     const note = activeInvoiceId ? ` Рахунок ${activeInvoiceId}.` : '';
-    render('failure', `Кошти не списано.${note} Спробуй оформити замовлення ще раз у кошику.`);
+    render('failure', `Кошти з картки не списано.${note} Спробуй оформити замовлення ще раз або звернися до нас за телефоном.`);
   }
   // Handle pending verification route (/payment/)
   else {
     if (!activeInvoiceId) {
       render(
         'pending',
-        'Не знайдено активного рахунку для перевірки. Якщо ти щойно оформив замовлення, перевір кошик.'
+        'Не знайдено активного рахунку для перевірки. Якщо ти щойно оформив замовлення, перевір свій кошик.'
       );
     } else {
       let attempts = 0;
@@ -170,19 +170,19 @@ const initial = INITIAL_CONFIG[state];
             localStorage.removeItem(STORAGE_KEYS.LAST_ORDER);
             render(
               'success',
-              `Дякуємо! Рахунок ${activeInvoiceId} успішно оплачено. Кур’єр уже готує доставку.`
+              `Дякуємо! Рахунок ${activeInvoiceId} успішно оплачено. Твої страви вже готуються на кухні!`
             );
           } else if (['failure', 'expired', 'reversed'].includes(status)) {
             clearInterval(timer);
             render(
               'failure',
-              `Рахунок ${activeInvoiceId} отримав статус «${status}». Кошти не списано — спробуй оформити замовлення ще раз.`
+              `Рахунок ${activeInvoiceId} отримав статус «${status}». Кошти не списано — спробуй оформити замовлення знову.`
             );
           } else if (attempts > 36) {
             clearInterval(timer);
             render(
               'pending',
-              `Рахунок ${activeInvoiceId} ще в обробці. Ти можеш оновити сторінку за кілька хвилин.`
+              `Рахунок ${activeInvoiceId} ще обробляється банком. Будь ласка, онови сторінку за кілька хвилин або зв'яжися з нами.`
             );
           }
         } catch (err) {
@@ -190,7 +190,7 @@ const initial = INITIAL_CONFIG[state];
             clearInterval(timer);
             render(
               'failure',
-              'Не вдалося перевірити статус оплати через мережу. Спробуй оновити сторінку.'
+              'Не вдалося автоматично перевірити статус оплати через мережу. Будь ласка, онови сторінку.'
             );
           }
         }

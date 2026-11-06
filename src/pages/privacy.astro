@@ -1,19 +1,57 @@
 ---
 import Layout from '@/layouts/Layout.astro';
+import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
+import { ShieldCheck, Lock, Smartphone, Database } from 'lucide-react';
 ---
 
-<Layout title="Конфіденційність">
-  <section class="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 sm:py-24 lg:px-12">
-    <h1 class="mb-12 text-4xl font-black leading-tight text-paper sm:text-6xl">Конфіденційність<span class="text-brand">.</span></h1>
+<Layout
+  title="Політика конфіденційності та захист даних · CHECK POINT"
+  description="Як ресторан CHECK POINT обробляє та захищає твої персональні дані при замовленні доставки та онлайн-оплаті."
+>
+  <section class="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 sm:py-20 lg:px-12">
+    <div class="mb-10 max-w-3xl">
+      <h1 class="text-4xl font-black leading-tight text-paper sm:text-6xl">Політика конфіденційності<span class="text-brand">.</span></h1>
+      <p class="mt-4 text-base leading-7 text-white/75 sm:text-lg">
+        Ми поважаємо твою приватність і дбаємо про надійний захист інформації, яку ти передаєш при оформленні замовлення.
+      </p>
+    </div>
+
     <div class="max-w-3xl space-y-10">
-      <section>
-        <h2 class="mb-3 text-2xl font-extrabold text-paper">Локальне збереження</h2>
-        <p class="leading-7 text-white/70">Вміст кошика зберігається в localStorage твого браузера. Очистити його можна, видаливши всі страви в кошику або очистивши дані сайту в налаштуваннях браузера.</p>
-      </section>
-      <section>
-        <h2 class="mb-3 text-2xl font-extrabold text-paper">Зовнішні ресурси</h2>
-        <p class="leading-7 text-white/70">Шрифти завантажуються з Google Fonts. Зображення зберігаються разом із сайтом. Аналітику та рекламні трекери не підключено.</p>
-      </section>
+      <article class="rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
+        <h2 class="mb-3 flex items-center gap-3 text-xl font-extrabold text-paper sm:text-2xl">
+          <Smartphone className="text-brand" size={24} /> Персональні дані для доставки
+        </h2>
+        <p class="leading-7 text-white/70">
+          Ім’я, номер телефону та адреса доставки, які ти вказуєш під час оформлення замовлення, використовуються виключно для виконання доставки кур’єром або видачі замовлення на самовивіз. Ми не передаємо твої дані третім особам для реклами чи спаму.
+        </p>
+      </article>
+
+      <article class="rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
+        <h2 class="mb-3 flex items-center gap-3 text-xl font-extrabold text-paper sm:text-2xl">
+          <Lock className="text-brand" size={24} /> Безпека онлайн-оплати
+        </h2>
+        <p class="leading-7 text-white/70">
+          Оплата замовлень здійснюється через сертифікований платіжний шлюз Paymock відповідно до міжнародних стандартів безпеки PCI DSS. Наш сайт не збирає, не зберігає та не має доступу до повних номерів твоїх платіжних карток чи кодів безпеки (CVV/CVC).
+        </p>
+      </article>
+
+      <article class="rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
+        <h2 class="mb-3 flex items-center gap-3 text-xl font-extrabold text-paper sm:text-2xl">
+          <Database className="text-brand" size={24} /> Локальне збереження у браузері (localStorage)
+        </h2>
+        <p class="leading-7 text-white/70">
+          Для твого комфорту вміст кошика та список обраних страв зберігаються локально у твоєму браузері. Це дозволяє повернутися до незавершеного замовлення в будь-який момент. Ти завжди можеш очистити ці дані, видаливши товари в кошику або очистивши кеш браузера.
+        </p>
+      </article>
+
+      <article class="rounded-2xl border border-white/10 bg-white/[0.02] p-6 sm:p-8">
+        <h2 class="mb-3 flex items-center gap-3 text-xl font-extrabold text-paper sm:text-2xl">
+          <ShieldCheck className="text-brand" size={24} /> Зворотний зв’язок
+        </h2>
+        <p class="mb-0 leading-7 text-white/70">
+          Якщо у тебе виникли запитання щодо обробки даних, ти завжди можеш звернутися до нас на email: <a class="text-brand underline hover:text-white" href={`mailto:${RESTAURANT_CONTACTS.email}`}>{RESTAURANT_CONTACTS.email}</a> або за телефоном {RESTAURANT_CONTACTS.phone}.
+        </p>
+      </article>
     </div>
   </section>
 </Layout>

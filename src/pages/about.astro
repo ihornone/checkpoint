@@ -2,44 +2,59 @@
 import Layout from '@/layouts/Layout.astro';
 import PromoBanner from '@/shared/components/ui/PromoBanner.astro';
 import { Routes } from '@/shared/constants/routes';
+import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
 import {
   ArrowRight,
   Bike,
   BadgeCheck,
   ChefHat,
+  Clock,
   Crown,
+  Flame,
   Heart,
   Leaf,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 
 const values = [
-  { icon: Leaf, title: 'Свіжі інгредієнти', text: 'Якісні продукти від перевірених постачальників' },
-  { icon: ChefHat, title: 'Смачні рецепти', text: 'Улюблені страви в нашому виконанні' },
-  { icon: Bike, title: 'Швидка доставка', text: 'Привозимо гарячу їжу до 60 хв' },
-  { icon: Heart, title: 'Дружня атмосфера', text: 'Комфортне місце для зустрічей' },
-  { icon: ShieldCheck, title: 'Контроль якості', text: 'Смак, свіжість та безпека на першому місці' },
+  { icon: Leaf, title: '100% свіжі продукти', text: 'Тільки охолоджена фермерська яловичина, справжня моцарела та свіжа зелень щодня.' },
+  { icon: Flame, title: '48-годинне тісто', text: 'Довга холодна ферментація робить піцу легкою, а пухкі бортики — ідеально хрумкими.' },
+  { icon: Bike, title: 'Термодоставка від 30 хв', text: 'Привозимо їжу гарячою у професійних термобоксах прямо до твоїх дверей.' },
+  { icon: Heart, title: 'Затишок на Київській', text: 'Світлий простір для зустрічей із друзями, колегами та затишних обідів у центрі.' },
+  { icon: ShieldCheck, title: 'Готуємо з-під ножа', text: 'Жодних розігрітих напівфабрикатів: починаємо готувати тільки після замовлення.' },
 ];
 ---
 
-<Layout title="Про нас" description="CHECK POINT — це місце, де смачна їжа, приємна атмосфера та хороші люди зустрічаються кожного дня.">
+<Layout
+  title="Про CHECK POINT — ресторан та доставка чесної їжі у Львові"
+  description="Історія та філософія ресторану CHECK POINT на вул. Київській, 36 у Львові. Тільки свіжі продукти, 48-годинне тісто для піци, соковиті бургери та швидка доставка."
+>
   <div class="mx-auto w-full max-w-7xl px-5 pb-12 sm:px-8 lg:px-12">
     <section class="grid items-center gap-10 py-12 sm:py-16 lg:min-h-[36rem] lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
       <div>
-        <h1 class="mb-6 text-5xl font-black leading-[0.98] tracking-tight text-paper sm:text-7xl lg:text-8xl">Про нас<span class="text-brand">.</span></h1>
-        <p class="mb-8 max-w-xl text-xl leading-8 text-white/75"><strong class="text-paper">CHECK POINT</strong> — це місце, де смачна їжа, приємна атмосфера та хороші люди зустрічаються кожного дня.</p>
+        <h1 class="mb-6 text-5xl font-black leading-[0.98] tracking-tight text-paper sm:text-7xl lg:text-8xl">
+          Про нас<span class="text-brand">.</span>
+        </h1>
+        <p class="mb-8 max-w-xl text-lg leading-8 text-white/80 sm:text-xl">
+          <strong class="text-paper">CHECK POINT</strong> — це львівський ресторан швидкої та якісної їжі, де зустрічаються чесні інгредієнти, тепла атмосфера та швидкий сервіс.
+        </p>
         <div class="flex flex-wrap gap-3">
-          <a href={Routes.MENU} class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:-translate-y-0.5">Наше меню <ArrowRight size={22} /></a>
-          <a href={Routes.MENU} class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/20 px-6 py-3 font-bold text-paper transition hover:border-brand hover:text-brand"><Bike size={22} /> Зробити замовлення</a>
+          <a href={Routes.MENU} class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:brightness-110">
+            Переглянути меню <ArrowRight size={22} />
+          </a>
+          <a href={Routes.DELIVERY} class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/20 px-6 py-3 font-bold text-paper transition hover:border-brand hover:text-brand">
+            <Bike size={22} /> Умови доставки
+          </a>
         </div>
         <div class="mt-10 grid grid-cols-3 divide-x divide-white/10">
           {[
-            { icon: Crown, value: '200+', label: 'страв у меню' },
-            { icon: Heart, value: '5 000+', label: 'задоволених клієнтів' },
-            { icon: BadgeCheck, value: '2 роки', label: 'з вами' },
+            { icon: Flame, value: '48 год', label: 'дозрівання тіста' },
+            { icon: Heart, value: '10 000+', label: 'задоволених гостей' },
+            { icon: Clock, value: '30–45 хв', label: 'середній час доставки' },
           ].map(({ icon: Icon, value, label }) => (
             <div class="flex flex-col items-center px-2 text-center first:pl-0 last:pr-0">
-              <Icon className="mb-2 text-brand" size={34} strokeWidth={1.6} />
+              <Icon className="mb-2 text-brand" size={32} strokeWidth={1.6} />
               <b class="text-xl font-black text-paper sm:text-2xl">{value}</b>
               <span class="mt-1 text-xs text-white/55 sm:text-sm">{label}</span>
             </div>
@@ -48,42 +63,53 @@ const values = [
       </div>
       <div class="relative mx-auto w-full max-w-[30rem]">
         <div class="absolute -inset-3 rotate-3 rounded-3xl border border-brand/50"></div>
-        <img class="relative aspect-square w-full rounded-3xl object-cover" src="/images/about-interior.png" alt="Затишний інтер’єр CHECK POINT із теплим освітленням і жовтою вивіскою" fetchpriority="high" width="480" height="480" />
+        <img class="relative aspect-square w-full rounded-3xl object-cover" src="/images/about-interior.png" alt="Затишний інтер’єр CHECK POINT у Львові з теплим освітленням" fetchpriority="high" width="480" height="480" />
       </div>
     </section>
 
-    <section class="grid gap-6 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-3 sm:p-5 lg:grid-cols-2 lg:items-center">
-      <img class="aspect-[4/3] w-full rounded-2xl object-cover" src="/images/about-chef.png" alt="Кухар CHECK POINT готує бургер" loading="lazy" width="600" height="450" />
-      <div class="p-4 sm:p-8">
-        <h2 class="mb-5 text-3xl font-black text-paper sm:text-4xl">Смачно — це просто</h2>
-        <p class="leading-7 text-white/70">CHECK POINT почався з простої ідеї — створити місце, де можна швидко та смачно поїсти улюблені страви: піцу, бургери, закуски та багато іншого.</p>
-        <p class="mb-0 leading-7 text-white/70">Сьогодні ми — це команда, яка щодня готує якісну їжу, розвиває сервіс і робить усе, щоб ти повертався до нас знову і знову.</p>
+    <section class="grid gap-6 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 lg:grid-cols-2 lg:items-center">
+      <img class="aspect-[4/3] w-full rounded-2xl object-cover" src="/images/about-chef.png" alt="Шеф-кухар CHECK POINT готує соковитий бургер на відкритій кухні" loading="lazy" width="600" height="450" />
+      <div class="p-2 sm:p-6">
+        <h2 class="mb-5 text-3xl font-black text-paper sm:text-4xl">Чесна їжа без компромісів</h2>
+        <p class="leading-7 text-white/75">
+          CHECK POINT почався з простого бажання: довести, що піца та бургери можуть бути по-справжньому ресторанного рівня без захмарних цінників та довгого очікування.
+        </p>
+        <p class="mb-0 leading-7 text-white/75">
+          Ми не використовуємо заморожених котлет чи дешевих замінників сиру. Щоранку приймаємо свіжі поставки від місцевих фермерів, замішуємо тісто за італійською рецептурою та збираємо кожну страву з-під ножа після твого замовлення.
+        </p>
       </div>
     </section>
 
     <section class="py-16 sm:py-20">
       <div class="mb-8 max-w-xl">
-        <h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Чому обирають нас?</h2>
+        <h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Чому нас обирають у Львові?</h2>
       </div>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
         {values.map(({ icon: Icon, title, text }) => (
-          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-center transition hover:border-brand/40">
-            <Icon className="mx-auto mb-4 text-brand" size={42} strokeWidth={1.5} />
-            <h3 class="mb-2 text-lg font-extrabold leading-tight text-paper">{title}</h3>
-            <p class="mb-0 text-sm leading-6 text-white/60">{text}</p>
+          <article class="flex flex-col justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-center transition hover:border-brand/40">
+            <div>
+              <Icon className="mx-auto mb-4 text-brand" size={40} strokeWidth={1.5} />
+              <h3 class="mb-2 text-base font-extrabold leading-tight text-paper">{title}</h3>
+              <p class="mb-0 text-xs leading-5 text-white/60">{text}</p>
+            </div>
           </article>
         ))}
       </div>
     </section>
 
-    <section class="grid gap-6 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-3 sm:p-5 lg:grid-cols-2 lg:items-center">
-      <img class="aspect-[16/10] w-full rounded-2xl object-cover" src="/images/about-interior.png" alt="Простір CHECK POINT для смачних обідів та зустрічей" loading="lazy" width="600" height="375" />
-      <div class="p-4 sm:p-8">
-        <h2 class="mb-5 text-3xl font-black text-paper sm:text-4xl">Наша команда</h2>
-        <p class="mb-0 leading-7 text-white/70">За кожною стравою стоїть команда професіоналів, яка любить свою справу. Кухарі, кур’єри, менеджери — ми всі працюємо для того, щоб ти отримував найкращий сервіс та справді смачну їжу.</p>
+    <section class="grid gap-6 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 lg:grid-cols-2 lg:items-center">
+      <img class="aspect-[16/10] w-full rounded-2xl object-cover" src="/images/about-interior.png" alt="Затишний зал CHECK POINT на вул. Київській, 36" loading="lazy" width="600" height="375" />
+      <div class="p-2 sm:p-6">
+        <h2 class="mb-5 text-3xl font-black text-paper sm:text-4xl">Команда, яка любить свою справу</h2>
+        <p class="leading-7 text-white/75">
+          За кожною хрусткою скоринкою піци та кожним соковитим бургером стоять професіонали: наші піцайоло, шеф-кухарі, пакувальники та швидкі кур’єри.
+        </p>
+        <p class="mb-0 leading-7 text-white/75">
+          Ми працюємо щодня з 10:00 до 22:00 на вул. Київській, 36, щоб кожен візит чи кожне онлайн-замовлення дарували тобі щире задоволення та відчуття турботи.
+        </p>
       </div>
     </section>
 
-    <PromoBanner class="mt-8" />
+    <PromoBanner class="mt-12" />
   </div>
 </Layout>

@@ -3,7 +3,7 @@ import Layout from '@/layouts/Layout.astro';
 import { PaymentResult } from '@/features/payment';
 ---
 
-<Layout title="Оплату не проведено">
+<Layout title="Оплату не завершено" description="Кошти не списано. Спробуй повторити замовлення або звернися до нас за номером телефону.">
   <div class="mx-auto w-full max-w-xl px-4 py-20 sm:px-8">
     <PaymentResult state="failure" />
   </div>

@@ -176,52 +176,79 @@ export default function CartDrawer() {
                 </div>
               ))
             ) : (
-              <div className="py-12 text-center leading-8 text-white/50">
-                Тут поки порожньо.<br />Знайдемо щось смачне? <a className="font-bold text-brand" href="/menu/" onClick={() => setOpen(false)}>До меню ↗</a>
+              <div className="py-12 text-center text-sm leading-7 text-white/60">
+                <p className="mb-3 text-base font-bold text-paper">Твій кошик поки порожній</p>
+                <p className="mb-5 text-white/50">Обери гарячу піцу, соковитий бургер або вигідне комбо — приготуємо та доставимо від 30 хвилин!</p>
+                <a className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand px-5 py-2.5 font-extrabold text-ink transition hover:brightness-110" href="/menu/" onClick={() => setOpen(false)}>
+                  Відкрити меню ↗
+                </a>
               </div>
             )}
 
             {items.length > 0 && (
-              <div className="mt-5 flex justify-between text-xl">
-                Разом <b>{total} грн</b>
+              <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                <div className="flex items-center justify-between text-base sm:text-lg">
+                  <span className="text-white/70">Сума замовлення:</span>
+                  <b className="text-xl font-black text-paper">{total} грн</b>
+                </div>
+                {method === 'Доставка' && (
+                  <div className="mt-2 text-xs leading-5">
+                    {total >= PRICING_RULES.FREE_DELIVERY_THRESHOLD ? (
+                      <span className="font-bold text-brand">🎉 Доставка по Львову для тебе БЕЗКОШТОВНА!</span>
+                    ) : (
+                      <span className="text-white/55">
+                        Додай страв ще на <b className="text-paper">{PRICING_RULES.FREE_DELIVERY_THRESHOLD - total} грн</b> для безкоштовної доставки по місту.
+                      </span>
+                    )}
+                  </div>
+                )}
+                {method === 'Самовивіз' && (
+                  <p className="mt-1 text-xs text-brand font-bold">
+                    ✓ Самовивіз на вул. Київській, 36 зі знижкою 10% (готовність 15–20 хв)
+                  </p>
+                )}
               </div>
             )}
-            {items.length > 0 && <p className="mt-2 text-xs leading-5 text-white/45">Вартість доставки розраховується окремо.</p>}
 
             {items.length > 0 && (
               <form className="mt-5 grid gap-4" onSubmit={checkout}>
-                <label className="grid gap-2 text-sm font-bold">
+                <label className="grid gap-1.5 text-xs font-bold uppercase tracking-wider text-white/70">
                   Твоє ім’я
-                  <input className="min-h-12 rounded-xl border border-white/15 bg-white/5 px-4 transition focus:border-brand focus:outline-none" name="name" required autoComplete="given-name" placeholder="Як до тебе звертатися?" />
+                  <input className="min-h-12 rounded-xl border border-white/15 bg-white/5 px-4 text-base font-normal text-paper transition focus:border-brand focus:outline-none" name="name" required autoComplete="given-name" placeholder="Як до тебе звертатися?" />
                 </label>
-                <label className="grid gap-2 text-sm font-bold">
-                  Телефон
-                  <input className="min-h-12 rounded-xl border border-white/15 bg-white/5 px-4 transition focus:border-brand focus:outline-none" name="phone" type="tel" required pattern="[+0-9 ()-]{10,20}" autoComplete="tel" placeholder="+380" />
+                <label className="grid gap-1.5 text-xs font-bold uppercase tracking-wider text-white/70">
+                  Номер телефону
+                  <input className="min-h-12 rounded-xl border border-white/15 bg-white/5 px-4 text-base font-normal text-paper transition focus:border-brand focus:outline-none" name="phone" type="tel" required pattern="[+0-9 ()-]{10,20}" autoComplete="tel" placeholder="+380 (XX) XXX-XX-XX" />
                 </label>
-                <label className="grid gap-2 text-sm font-bold">
+                <label className="grid gap-1.5 text-xs font-bold uppercase tracking-wider text-white/70">
                   Спосіб отримання
                   <span className="relative block">
                     <select
-                      className="min-h-12 w-full appearance-none rounded-xl border border-white/15 bg-ink px-4 pr-11 text-base text-paper transition focus:border-brand focus:outline-none"
+                      className="min-h-12 w-full appearance-none rounded-xl border border-white/15 bg-ink px-4 pr-11 text-base font-normal text-paper transition focus:border-brand focus:outline-none"
                       name="method"
                       value={method}
                       onChange={(event) => setMethod((event.target as HTMLSelectElement).value as DeliveryMethod)}
                     >
-                      <option>Самовивіз</option>
-                      <option>Доставка</option>
+                      <option value="Самовивіз">Самовивіз (вул. Київська, 36) — знижка −10%</option>
+                      <option value="Доставка">Кур’єрська доставка по Львову та передмістю</option>
                     </select>
                     <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-brand" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>
                   </span>
                 </label>
                 {method === 'Доставка' && (
-                  <label className="grid gap-2 text-sm font-bold">
-                    Адреса
-                    <input className="min-h-12 rounded-xl border border-white/15 bg-white/5 px-4 transition focus:border-brand focus:outline-none" name="address" autoComplete="street-address" placeholder="Вулиця, будинок, квартира" />
+                  <label className="grid gap-1.5 text-xs font-bold uppercase tracking-wider text-white/70">
+                    Адреса доставки у Львові
+                    <input className="min-h-12 rounded-xl border border-white/15 bg-white/5 px-4 text-base font-normal text-paper transition focus:border-brand focus:outline-none" name="address" required autoComplete="street-address" placeholder="Вулиця, номер будинку, під’їзд, квартира" />
                   </label>
                 )}
                 <button className="min-h-12 rounded-xl bg-brand px-5 py-3 font-extrabold text-ink transition hover:brightness-110 disabled:opacity-60" type="submit" disabled={status.kind === 'pending'}>
-                  Переглянути замовлення →
+                  {status.kind === 'pending' ? 'Створюємо рахунок…' : `Оформити та оплатити онлайн (${total} грн) →`}
                 </button>
+                <div className="flex items-center justify-center gap-2 text-center text-[11px] text-white/45">
+                  <span>🔒 Безпечна оплата Paymock</span>
+                  <span>·</span>
+                  <span>Apple Pay / Google Pay / Картка</span>
+                </div>
                 {status.text && (
                   <p className={`mb-0 text-sm leading-6 ${status.kind === 'error' ? 'text-red-400' : 'text-brand'}`} role="status">{status.text}</p>
                 )}

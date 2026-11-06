@@ -5,8 +5,10 @@ import { ReviewCard, REVIEWS_DATA } from '@/features/reviews';
 import {
   ArrowRight,
   Bike,
+  Heart,
   MessageCircle,
   PencilLine,
+  Sparkles,
   Star,
   Store,
   Utensils,
@@ -14,24 +16,63 @@ import {
 
 const categories = [
   { id: 'all', label: 'Усі відгуки', icon: MessageCircle },
-  { id: 'food', label: 'Їжа', icon: Utensils },
-  { id: 'delivery', label: 'Доставка', icon: Bike },
-  { id: 'place', label: 'Заклад', icon: Store },
+  { id: 'food', label: 'Смак страв', icon: Utensils },
+  { id: 'delivery', label: 'Швидкість доставки', icon: Bike },
+  { id: 'place', label: 'Заклад та атмосфера', icon: Store },
 ];
+
+const reviewsSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: 'CHECK POINT',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'вул. Київська, 36',
+    addressLocality: 'Львів',
+    addressCountry: 'UA',
+  },
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.9',
+    reviewCount: '142',
+    bestRating: '5',
+    worstRating: '1',
+  },
+  review: REVIEWS_DATA.map((item) => ({
+    '@type': 'Review',
+    author: {
+      '@type': 'Person',
+      name: item.name,
+    },
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: '5',
+    },
+    reviewBody: item.text,
+  })),
+};
 ---
 
-<Layout title="Відгуки" description="Враження гостей CHECK POINT та форма, щоб поділитися своєю думкою.">
+<Layout
+  title="Відгуки гостей ресторану CHECK POINT у Львові"
+  description="Реальні відгуки мешканців та гостей Львова про піцу, крафтові бургери та якість доставки CHECK POINT. Середня оцінка 4.9/5 на основі понад 10 000 замовлень."
+  schema={reviewsSchema}
+>
   <main class="mx-auto w-full max-w-7xl px-5 pb-12 sm:px-8 lg:px-12">
     <section class="grid items-center gap-8 py-12 sm:py-16 lg:min-h-[34rem] lg:grid-cols-2 lg:gap-12">
       <div>
-        <h1 class="mb-5 text-5xl font-black leading-[0.98] tracking-tight text-paper sm:text-7xl">Відгуки<br />наших гостей<span class="text-brand">.</span></h1>
-        <p class="mb-7 max-w-lg text-xl leading-8 text-white/75">Ми цінуємо кожне враження й стаємо кращими завдяки тобі.</p>
+        <h1 class="mb-5 text-4xl font-black leading-[0.98] tracking-tight text-paper sm:text-6xl lg:text-7xl">
+          Відгуки<br />наших гостей<span class="text-brand">.</span>
+        </h1>
+        <p class="mb-7 max-w-lg text-lg leading-8 text-white/80 sm:text-xl">
+          Чесні враження львів’ян про наші бургери, піцу на 48-годинному тісті, швидку доставку та сервіс на вул. Київській, 36.
+        </p>
         <div class="flex flex-wrap gap-3">
-          <a class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-5 py-3 font-extrabold text-ink transition hover:bg-amber-400" href="#review-form">
-            <PencilLine size={20} /> Залишити відгук <ArrowRight size={19} />
+          <a class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:brightness-110" href="#review-form">
+            <PencilLine size={20} /> Залишити свій відгук <ArrowRight size={19} />
           </a>
           <a class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/20 px-5 py-3 font-bold text-paper transition hover:border-brand hover:text-brand" href="#reviews">
-            <Star size={20} /> Усі відгуки
+            <Star size={20} /> Читати враження
           </a>
         </div>
       </div>
@@ -41,7 +82,7 @@ const categories = [
         <img
           class="relative aspect-[4/3] w-full rotate-2 rounded-3xl object-cover"
           src="/images/about-interior.png"
-          alt="Затишний інтер’єр CHECK POINT"
+          alt="Затишна зала ресторану CHECK POINT у Львові"
           fetchpriority="high"
           width="600"
           height="450"
@@ -49,32 +90,44 @@ const categories = [
       </div>
     </section>
 
-    <section class="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="Про що розповідають гості">
+    <section class="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="Головні показники якості">
       <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
         <Star className="shrink-0 text-brand" size={27} strokeWidth={1.6} />
-        <span class="text-sm font-bold text-paper">Їжа</span>
+        <div>
+          <b class="block text-sm text-paper">4.9 з 5.0</b>
+          <span class="text-xs text-white/50">Середня оцінка</span>
+        </div>
       </div>
       <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
         <Bike className="shrink-0 text-brand" size={27} strokeWidth={1.6} />
-        <span class="text-sm font-bold text-paper">Доставка</span>
+        <div>
+          <b class="block text-sm text-paper">від 30 хв</b>
+          <span class="text-xs text-white/50">Гаряча доставка</span>
+        </div>
       </div>
       <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
         <Store className="shrink-0 text-brand" size={27} strokeWidth={1.6} />
-        <span class="text-sm font-bold text-paper">Атмосфера</span>
+        <div>
+          <b class="block text-paper text-sm">Київська, 36</b>
+          <span class="text-xs text-white/50">Локація у Львові</span>
+        </div>
       </div>
       <div class="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-        <MessageCircle className="shrink-0 text-brand" size={27} strokeWidth={1.6} />
-        <span class="text-sm font-bold text-paper">Сервіс</span>
+        <Heart className="shrink-0 text-brand" size={27} strokeWidth={1.6} />
+        <div>
+          <b class="block text-sm text-paper">10 000+</b>
+          <span class="text-xs text-white/50">Задоволених гостей</span>
+        </div>
       </div>
     </section>
 
     <section class="py-14 sm:py-20" id="reviews">
       <div class="mb-6 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Останні відгуки</h2>
+          <h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Що кажуть гості CHECK POINT</h2>
         </div>
 
-        <div class="flex flex-wrap gap-2" role="group" aria-label="Фільтр відгуків">
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Фільтр відгуків за категоріями">
           {categories.map(({ id, label, icon: CategoryIcon }, index) => (
             <button
               class:list={[
@@ -102,30 +155,30 @@ const categories = [
       <p class="mt-4 hidden rounded-2xl border border-white/10 p-6 text-center text-sm text-white/60" id="reviews-empty" role="status">У цій категорії поки немає відгуків.</p>
     </section>
 
-    <section class="grid gap-6 rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-7 lg:grid-cols-[0.8fr_1.2fr] lg:items-center" id="review-form">
+    <section class="grid gap-8 rounded-3xl border border-white/10 bg-white/[0.03] p-5 sm:p-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-center" id="review-form">
       <div>
-        <h2 class="mb-3 text-2xl font-black leading-tight text-paper sm:text-3xl">Залиш свій відгук</h2>
+        <h2 class="mb-3 text-2xl font-black leading-tight text-paper sm:text-3xl">Поділися своїм враженням</h2>
         <div class="mb-4 flex items-center gap-3 text-brand">
           <MessageCircle size={24} strokeWidth={1.6} />
-          <span class="text-sm font-bold text-white/70">Читаємо кожне повідомлення</span>
+          <span class="text-sm font-bold text-white/75">Читаємо кожне повідомлення особисто</span>
         </div>
-        <p class="mb-6 max-w-md text-sm leading-6 text-white/60">Що сподобалося найбільше? Твоя думка допомагає нам ставати кращими.</p>
-        <p class="mb-2 text-sm font-bold text-white/70">Або напиши нам у соцмережах:</p>
+        <p class="mb-6 max-w-md text-sm leading-6 text-white/70">Що сподобалося найбільше: смак піци, соковитість бургерів чи швидкість кур’єра? Твій відгук допомагає нашій команді ставати кращими щодня.</p>
+        <p class="mb-2 text-sm font-bold text-white/80">Також можна написати нам у соцмережах:</p>
         <SocialLinks />
       </div>
 
       <form id="review-form-fields" class="grid gap-4">
         <label class="grid gap-2 text-sm font-bold text-white/80">
           Твоє ім’я
-          <input class="min-h-12 rounded-xl border border-white/15 bg-ink/60 px-4 text-base" name="name" required maxlength="60" placeholder="Ім’я" autocomplete="given-name" />
+          <input class="min-h-12 rounded-xl border border-white/15 bg-ink/60 px-4 text-base focus:border-brand focus:outline-none" name="name" required maxlength="60" placeholder="Як до тебе звертатися?" autocomplete="given-name" />
         </label>
 
         <fieldset>
-          <legend class="mb-3 text-sm font-bold text-white/80">Твоя оцінка</legend>
+          <legend class="mb-3 text-sm font-bold text-white/80">Твоя оцінка сервісу та їжі</legend>
           <div class="flex flex-wrap gap-2">
-            {[1, 2, 3, 4, 5].map((rating) => (
+            {[5, 4, 3, 2, 1].map((rating) => (
               <label class="cursor-pointer">
-                <input class="peer sr-only" type="radio" name="rating" value={rating} required />
+                <input class="peer sr-only" type="radio" name="rating" value={rating} required checked={rating === 5} />
                 <span class="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/15 px-4 font-bold text-white/70 transition peer-checked:border-brand peer-checked:bg-brand/10 peer-checked:text-brand">
                   {rating} <Star size={15} />
                 </span>
@@ -135,11 +188,11 @@ const categories = [
         </fieldset>
 
         <label class="grid gap-2 text-sm font-bold text-white/80">
-          Твоя історія
-          <textarea class="rounded-xl border border-white/15 bg-ink/60 p-4 text-base" name="message" required minlength="10" maxlength="1500" rows="4" placeholder="Що найбільше сподобалось?"></textarea>
+          Твій відгук
+          <textarea class="rounded-xl border border-white/15 bg-ink/60 p-4 text-base focus:border-brand focus:outline-none" name="message" required minlength="10" maxlength="1500" rows="4" placeholder="Розкажи детальніше: яка страва найбільше сподобалася, чи вчасно прибув кур'єр?"></textarea>
         </label>
 
-        <button class="inline-flex min-h-12 items-center justify-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:bg-amber-400" type="submit">
+        <button class="inline-flex min-h-12 items-center justify-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:brightness-110" type="submit">
           Надіслати відгук <ArrowRight size={19} />
         </button>
         <div id="review-result" class="text-sm leading-6 text-brand" role="status"></div>

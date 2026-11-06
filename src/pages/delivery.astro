@@ -4,80 +4,144 @@ import Icon from '@/shared/components/ui/Icon.astro';
 import PromoBanner from '@/shared/components/ui/PromoBanner.astro';
 import { Routes } from '@/shared/constants/routes';
 import { PRICING_RULES } from '@/shared/constants/pricing';
-import { ArrowRight, ChefHat, Coins, House, Leaf, List, NotebookPen, ShieldCheck, Soup, Timer } from 'lucide-react';
+import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
+import { ArrowRight, ChefHat, Coins, House, Leaf, List, NotebookPen, ShieldCheck, Soup, Timer, Truck } from 'lucide-react';
 
 const perks = [
-  { icon: Timer, title: 'Швидко', text: 'До 60 хв' },
-  { icon: NotebookPen, title: 'Зручно', text: 'Онлайн замовлення' },
-  { icon: ShieldCheck, title: 'Надійно', text: 'Контроль якості' },
-  { icon: Soup, title: 'Смачно', text: 'Як у закладі' },
+  { icon: Timer, title: 'Швидко', text: '30–45 хв по Львову' },
+  { icon: NotebookPen, title: 'В 1 клік', text: 'Оформлення за 60 секунд' },
+  { icon: ShieldCheck, title: 'Термозахист', text: 'Гаряча їжа з печі' },
+  { icon: Coins, title: 'Безкоштовно', text: `Від ${PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн по місту` },
 ];
 
 const steps = [
-  { icon: List, title: 'Оформи замовлення', text: 'на сайті' },
-  { icon: ChefHat, title: 'Ми готуємо твою страву', text: 'зі свіжих інгредієнтів' },
-  { icon: Soup, title: 'Передаємо кур’єру', text: 'гарячу та надійно упаковану їжу' },
-  { icon: House, title: 'Ти отримуєш замовлення', text: 'прямо до дверей' },
+  { icon: List, title: 'Обирай улюблені страви', text: 'Додавай піцу, бургери чи вигідні комбо до кошика без обов’язкової реєстрації.' },
+  { icon: ChefHat, title: 'Готуємо з-під ножа', text: 'Починаємо приготування одразу після підтвердження. Ніяких заморожених напівфабрикатів.' },
+  { icon: Soup, title: 'Пакуємо у термобокси', text: 'Бургери зберігають соковитість, піца залишається гарячою, а фрі хрумтить.' },
+  { icon: House, title: 'Кур’єр доставляє до дверей', text: 'Зручна безконтактна доставка або отримання за вказаною адресою.' },
 ];
 
 const questions = [
-  ['Скільки триває доставка?', 'Орієнтовно до 60 хвилин. Точний час залежить від адреси й завантаженості кухні — його підтвердить менеджер.'],
-  ['Чи є мінімальна сума замовлення?', `У межах основної зони доставка безкоштовна для замовлень від ${PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн. Для меншої суми вартість доставки — ${PRICING_RULES.STANDARD_DELIVERY_FEE} грн.`],
-  ['Чи можна змінити адресу після оформлення?', 'Зв’яжися з менеджером якнайшвидше. Якщо кур’єр ще не виїхав, ми допоможемо уточнити адресу.'],
-  ['Що робити, якщо замовлення затримується?', 'Звернися до менеджера через контакти закладу, щоб уточнити статус і час прибуття кур’єра.'],
+  [
+    'Скільки часу займає доставка по Львову?',
+    'У межах основної зони Львова середній час доставки становить 30–45 хвилин. Кожне замовлення пакується у фольговані термобокси одразу з печі, тому страви приїжджають свіжими та по-справжньому гарячими.',
+  ],
+  [
+    'Яка вартість доставки та мінімальна сума замовлення?',
+    `Мінімальної суми замовлення немає — ти можеш замовити навіть одну страву. Доставка по Львову БЕЗКОШТОВНА для всіх замовлень від ${PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн. Якщо сума менша, вартість доставки становить лише ${PRICING_RULES.STANDARD_DELIVERY_FEE} грн. Для розширеної зони (передмістя) безкоштовна доставка діє від ${PRICING_RULES.EXTENDED_DELIVERY_THRESHOLD} грн.`,
+  ],
+  [
+    'Як працює самовивіз та чи є знижка?',
+    'Самовивіз доступний щодня з 10:00 до 22:00 за адресою: м. Львів, вул. Київська, 36. Страви готуються за 15–20 хвилин, а на кожне замовлення самовивозом діє знижка 10%!',
+  ],
+  [
+    'Як оплатити замовлення?',
+    'Ти можеш безпечно оплатити замовлення онлайн карткою будь-якого українського банку, через Apple Pay або Google Pay за допомогою платіжного сервісу Paymock. Оплата проходить без жодних прихованих комісій.',
+  ],
+  [
+    'Що робити, якщо потрібно змінити адресу або уточнити статус?',
+    `Якщо замовлення вже оформлено, але кур’єр ще в дорозі, зв’яжися з нашим менеджером за телефоном ${RESTAURANT_CONTACTS.phone}. Ми оперативно допоможемо з будь-яким питанням.`,
+  ],
 ];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: questions.map(([question, answer]) => ({
+    '@type': 'Question',
+    name: question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: answer,
+    },
+  })),
+};
 ---
 
-<Layout title="Доставка" description="Смачно та швидко — прямо до твоїх дверей. Зони, умови й вартість доставки CHECK POINT.">
+<Layout
+  title="Доставка їжі у Львові — умови, тарифи та час прибуття"
+  description="Швидка доставка піци, бургерів та обідів по Львову від CHECK POINT. Час доставки 30–45 хв, безкоштовно від 300 грн, самовивіз зі знижкою 10% на вул. Київській, 36."
+  schema={faqSchema}
+>
   <div class="mx-auto w-full max-w-7xl px-5 pb-12 sm:px-8 lg:px-12">
     <section class="relative grid items-center gap-5 overflow-hidden py-12 sm:py-16 lg:min-h-[29rem] lg:grid-cols-2">
       <div class="relative z-10">
-        <h1 class="mb-5 text-5xl font-black leading-[0.98] tracking-tight text-paper sm:text-7xl lg:text-8xl">Доставка<span class="text-brand">.</span></h1>
-        <p class="mb-7 max-w-lg text-xl font-bold leading-8 text-white/75">Смачно та швидко — прямо до твоїх дверей!</p>
+        <h1 class="mb-5 text-4xl font-black leading-[0.98] tracking-tight text-paper sm:text-6xl lg:text-7xl">
+          Доставка їжі<br />у Львові<span class="text-brand">.</span>
+        </h1>
+        <p class="mb-7 max-w-lg text-lg font-bold leading-8 text-white/80 sm:text-xl">
+          Гаряча піца та соковиті бургери прямо до твоїх дверей за 30–45 хвилин!
+        </p>
         <div class="flex flex-wrap gap-3">
-          <a class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-5 py-3 font-extrabold text-ink" href={Routes.MENU}><Icon name="scooter" size={23} /> Замовити доставку <ArrowRight size={20} /></a>
-          <a class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/20 px-5 py-3 font-bold text-paper" href={Routes.MENU}><List size={21} /> Перейти до меню</a>
+          <a class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:brightness-110" href={Routes.MENU}>
+            <Icon name="scooter" size={23} /> Замовити доставку <ArrowRight size={20} />
+          </a>
+          <a class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/20 px-6 py-3 font-bold text-paper transition hover:border-brand hover:text-brand" href={Routes.MENU}>
+            <List size={21} /> Переглянути меню
+          </a>
         </div>
       </div>
-      <img class="mx-auto max-h-[24rem] w-full object-contain lg:translate-y-16" src="/images/delivery-courier.png" alt="Кур’єр CHECK POINT на жовтому скутері" fetchpriority="high" width="600" height="400" />
+      <img class="mx-auto max-h-[24rem] w-full object-contain lg:translate-y-16" src="/images/delivery-courier.png" alt="Кур’єр ресторану CHECK POINT везе гаряче замовлення" fetchpriority="high" width="600" height="400" />
     </section>
 
-    <section class="grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 sm:grid-cols-4" aria-label="Переваги доставки">
+    <section class="grid grid-cols-2 gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 sm:grid-cols-4" aria-label="Переваги нашої доставки">
       {perks.map(({ icon: Icon, title, text }) => (
-        <div class="flex items-center gap-3 bg-ink p-4 sm:gap-4 sm:p-6"><Icon className="shrink-0 text-brand" size={32} strokeWidth={1.5} /><p class="mb-0"><b class="block text-sm font-extrabold text-paper sm:text-base">{title}</b><span class="text-xs text-white/50 sm:text-sm">{text}</span></p></div>
+        <div class="flex items-center gap-3 bg-ink p-4 sm:gap-4 sm:p-6">
+          <Icon className="shrink-0 text-brand" size={32} strokeWidth={1.5} />
+          <p class="mb-0">
+            <b class="block text-sm font-extrabold text-paper sm:text-base">{title}</b>
+            <span class="text-xs text-white/50 sm:text-sm">{text}</span>
+          </p>
+        </div>
       ))}
     </section>
 
     <section class="grid gap-8 py-16 sm:py-20 lg:grid-cols-[0.8fr_1.2fr_0.8fr] lg:items-center">
       <div>
         <h2 class="mb-5 text-3xl font-black text-paper">Зони доставки</h2>
-        <p class="leading-7 text-white/70"><b class="text-brand">м. Львів</b> — безкоштовно при замовленні від {PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн</p>
-        <p class="leading-7 text-white/70"><b class="text-brand">м. Беляївка</b> — від {PRICING_RULES.EXTENDED_DELIVERY_THRESHOLD} грн</p>
-        <p class="mb-0 leading-7 text-white/70">Інші населені пункти — уточнюйте у менеджера</p>
+        <p class="leading-7 text-white/75">
+          <b class="text-brand">Основна зона (м. Львів):</b> безкоштовна доставка для замовлень від {PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн. Доставка до 300 грн — всього {PRICING_RULES.STANDARD_DELIVERY_FEE} грн.
+        </p>
+        <p class="leading-7 text-white/75">
+          <b class="text-brand">Передмістя Львова:</b> (Сокільники, Зимна Вода, Винники, Брюховичі, Зубра) — безкоштовно від {PRICING_RULES.EXTENDED_DELIVERY_THRESHOLD} грн або {PRICING_RULES.EXTENDED_DELIVERY_FEE} грн.
+        </p>
+        <p class="mb-0 leading-7 text-white/60">
+          Інші населені пункти — з радістю підкажемо точний час та умови за телефоном.
+        </p>
       </div>
-      <img class="mx-auto max-h-80 w-full object-contain" src="/delivery-map.svg" alt="Схематична карта основної та розширеної зон доставки у Львові" width="600" height="400" />
+      <img class="mx-auto max-h-80 w-full object-contain" src="/delivery-map.svg" alt="Карта зон доставки CHECK POINT у Львові та передмісті" width="600" height="400" />
       <div class="grid gap-3">
         {[
-          { title: 'Основна зона', text: `Безкоштовна доставка від ${PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн`, color: 'bg-brand' },
-          { title: 'Розширена зона', text: `Доставка від ${PRICING_RULES.EXTENDED_DELIVERY_THRESHOLD} грн`, color: 'bg-brand/20' },
-          { title: 'Поза зоною', text: 'Наразі не доставляємо', color: 'bg-white/20' },
+          { title: 'Основна зона (Львів)', text: `Безкоштовно від ${PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн (інакше ${PRICING_RULES.STANDARD_DELIVERY_FEE} грн)`, color: 'bg-brand' },
+          { title: 'Передмістя Львова', text: `Безкоштовно від ${PRICING_RULES.EXTENDED_DELIVERY_THRESHOLD} грн (інакше ${PRICING_RULES.EXTENDED_DELIVERY_FEE} грн)`, color: 'bg-brand/20' },
+          { title: 'Самовивіз з закладу', text: 'Знижка −10% та готовність за 15–20 хв', color: 'bg-white/20' },
         ].map((zone) => (
-          <div class="flex items-center gap-3 rounded-xl border border-white/10 p-3"><span class={`size-7 shrink-0 rounded-xl ${zone.color}`}></span><p class="mb-0 text-sm leading-5 text-white/60"><b class="block text-paper">{zone.title}</b>{zone.text}</p></div>
+          <div class="flex items-center gap-3 rounded-xl border border-white/10 p-3">
+            <span class={`size-7 shrink-0 rounded-xl ${zone.color}`}></span>
+            <p class="mb-0 text-sm leading-5 text-white/60">
+              <b class="block text-paper">{zone.title}</b>
+              {zone.text}
+            </p>
+          </div>
         ))}
       </div>
     </section>
 
     <section>
-      <h2 class="mb-8 text-3xl font-black text-paper">Як працює доставка?</h2>
-      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="mb-8 max-w-xl">
+        <h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Як працює доставка?</h2>
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {steps.map(({ icon: Icon, title, text }, index) => (
-          <article class="rounded-2xl border border-white/10 p-5">
-            <div class="mb-4 flex items-center justify-between">
-              <span class="grid size-9 place-items-center rounded-full bg-brand font-black text-ink">{index + 1}</span>
-              <Icon className="text-brand" size={30} strokeWidth={1.5} />
+          <article class="flex flex-col justify-between rounded-2xl border border-white/10 bg-white/[0.02] p-5">
+            <div>
+              <div class="mb-4 flex items-center justify-between">
+                <span class="grid size-9 place-items-center rounded-full bg-brand font-black text-ink">{index + 1}</span>
+                <Icon className="text-brand" size={28} strokeWidth={1.5} />
+              </div>
+              <h3 class="mb-2 text-base font-extrabold leading-tight text-paper">{title}</h3>
+              <p class="mb-0 text-sm leading-6 text-white/60">{text}</p>
             </div>
-            <h3 class="mb-2 text-base font-extrabold leading-tight text-paper">{title}</h3>
-            <p class="mb-0 text-sm leading-5 text-white/55">{text}</p>
           </article>
         ))}
       </div>
@@ -85,35 +149,55 @@ const questions = [
 
     <section class="grid gap-5 py-12 lg:grid-cols-2">
       <div class="relative min-h-56 overflow-hidden rounded-3xl border border-white/10 bg-[#211a0b]">
-        <img class="absolute inset-0 h-full w-full object-cover" src="/images/delivery-meal.png" alt="Бургер і картопля фрі CHECK POINT" loading="lazy" width="600" height="400" />
+        <img class="absolute inset-0 h-full w-full object-cover" src="/images/delivery-meal.png" alt="Свіжий бургер і хрустка картопля фрі CHECK POINT" loading="lazy" width="600" height="400" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-black/10" aria-hidden="true"></div>
         <Leaf className="absolute left-4 top-4 text-brand/70" size={38} />
       </div>
       <div class="rounded-3xl border border-white/10 bg-white/[0.03] p-6 sm:p-8">
-        <h2 class="mb-5 flex items-center gap-3 text-2xl font-black text-paper"><Coins className="text-brand" size={32} /> Вартість доставки</h2>
+        <h2 class="mb-2 flex items-center gap-3 text-2xl font-black text-paper">
+          <Coins className="text-brand" size={32} /> Вартість та прозорі тарифи
+        </h2>
+        <p class="mb-5 text-sm text-white/60">Жодних прихованих сервісних зборів чи неочікуваних доплат</p>
         <dl class="divide-y divide-white/10">
-          <div class="flex items-center justify-between gap-3 py-4"><dt class="text-sm text-white/70 sm:text-base">Замовлення від {PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн</dt><dd class="rounded-xl bg-brand px-3 py-1 text-xs font-extrabold text-ink sm:text-sm">Безкоштовно</dd></div>
-          <div class="flex items-center justify-between gap-3 py-4"><dt class="text-sm text-white/70 sm:text-base">Замовлення до {PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн</dt><dd class="whitespace-nowrap font-bold text-paper"><b class="text-xl">{PRICING_RULES.STANDARD_DELIVERY_FEE}</b> грн</dd></div>
-          <div class="flex items-center justify-between gap-3 py-4"><dt class="text-sm text-white/70 sm:text-base">Розширена зона</dt><dd class="whitespace-nowrap font-bold text-paper">від <b class="text-xl">{PRICING_RULES.EXTENDED_DELIVERY_FEE}</b> грн</dd></div>
+          <div class="flex items-center justify-between gap-3 py-4">
+            <dt class="text-sm text-white/70 sm:text-base">Замовлення від {PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн по Львову</dt>
+            <dd class="rounded-xl bg-brand px-3 py-1 text-xs font-extrabold text-ink sm:text-sm">0 грн (Безкоштовно)</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3 py-4">
+            <dt class="text-sm text-white/70 sm:text-base">Замовлення до {PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн по Львову</dt>
+            <dd class="whitespace-nowrap font-bold text-paper"><b class="text-xl">{PRICING_RULES.STANDARD_DELIVERY_FEE}</b> грн</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3 py-4">
+            <dt class="text-sm text-white/70 sm:text-base">Передмістя Львова (від {PRICING_RULES.EXTENDED_DELIVERY_THRESHOLD} грн)</dt>
+            <dd class="whitespace-nowrap font-bold text-paper"><b class="text-xl">0 грн</b> / від {PRICING_RULES.EXTENDED_DELIVERY_FEE} грн</dd>
+          </div>
+          <div class="flex items-center justify-between gap-3 py-4">
+            <dt class="text-sm text-white/70 sm:text-base">Самовивіз (вул. Київська, 36)</dt>
+            <dd class="rounded-xl border border-brand/40 bg-brand/10 px-3 py-1 text-xs font-extrabold text-brand sm:text-sm">Знижка −10%</dd>
+          </div>
         </dl>
       </div>
     </section>
 
-    <section class="grid gap-7 lg:grid-cols-[0.7fr_1.3fr]">
+    <section class="grid gap-7 lg:grid-cols-[0.7fr_1.3fr]" id="faq">
       <div class="lg:sticky lg:top-24 lg:self-start">
-        <h2 class="mb-4 text-3xl font-black leading-tight text-paper">Часті запитання про доставку</h2>
+        <h2 class="mb-3 text-3xl font-black leading-tight text-paper sm:text-4xl">Часті запитання про доставку</h2>
+        <p class="text-sm leading-6 text-white/60">Не знайшов відповіді? Зателефонуй нам за номером {RESTAURANT_CONTACTS.phone} — ми завжди на зв’язку.</p>
       </div>
-      <div class="grid content-start gap-2">
+      <div class="grid content-start gap-3">
         {questions.map(([question, answer]) => (
-          <details class="group cursor-pointer rounded-2xl border border-white/10 bg-white/[0.02] p-4 open:border-brand/30" data-faq>
-            <summary class="flex min-h-8 cursor-pointer list-none items-center justify-between gap-4 font-bold text-paper">{question}<span class="text-2xl font-normal text-brand transition group-open:rotate-45">+</span></summary>
-            <p class="mb-0 mt-3 text-sm leading-6 text-white/60">{answer}</p>
+          <details class="group cursor-pointer rounded-2xl border border-white/10 bg-white/[0.02] p-5 open:border-brand/40" data-faq>
+            <summary class="flex min-h-8 cursor-pointer list-none items-center justify-between gap-4 font-bold text-paper">
+              {question}
+              <span class="text-2xl font-normal text-brand transition group-open:rotate-45">+</span>
+            </summary>
+            <p class="mb-0 mt-3 text-sm leading-6 text-white/70">{answer}</p>
           </details>
         ))}
       </div>
     </section>
 
-    <PromoBanner class="mt-8" />
+    <PromoBanner class="mt-12" />
   </div>
 </Layout>
 

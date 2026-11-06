@@ -8,12 +8,49 @@ import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
 export interface Props {
   title?: string;
   description?: string;
+  schema?: Record<string, any>;
 }
 
 const {
-  title = 'Більше ніж просто їжа',
-  description = `${RESTAURANT_CONTACTS.name} — соковиті бургери, хрустка піца, свіжі салати та ароматна кава. Обирай свій смак.`,
+  title = 'Доставка їжі у Львові — піца, бургери та сети',
+  description = `${RESTAURANT_CONTACTS.name} — ресторан гарячої доставки у Львові. Соковиті крафтові бургери, хрустка піца 32 см, свіжі салати та комбо. Доставка від 30 хв.`,
+  schema,
 } = Astro.props;
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://checkpoint.food').href;
+
+const defaultRestaurantSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FastFoodRestaurant',
+  name: RESTAURANT_CONTACTS.name,
+  image: 'https://checkpoint.food/images/home-hero.png',
+  telephone: RESTAURANT_CONTACTS.phoneRaw,
+  email: RESTAURANT_CONTACTS.email,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'вул. Київська, 36',
+    addressLocality: 'Львів',
+    addressCountry: 'UA',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 49.8335,
+    longitude: 24.0089,
+  },
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      opens: '10:00',
+      closes: '22:00',
+    },
+  ],
+  servesCuisine: ['Pizza', 'Burgers', 'Fast Food', 'European'],
+  priceRange: '₴₴',
+  hasMenu: 'https://checkpoint.food/menu/',
+};
+
+const pageSchema = schema || defaultRestaurantSchema;
 ---
 <!doctype html>
 <html lang="uk">
@@ -22,11 +59,31 @@ const {
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#090909" />
+    <link rel="canonical" href={canonicalUrl} />
     <title>{title} · {RESTAURANT_CONTACTS.name}</title>
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:site_name" content={RESTAURANT_CONTACTS.name} />
+    <meta property="og:title" content={`${title} · ${RESTAURANT_CONTACTS.name}`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="uk_UA" />
+    <meta property="og:image" content="/images/home-hero.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${title} · ${RESTAURANT_CONTACTS.name}`} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="/images/home-hero.png" />
+
     <link rel="icon" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700;800&family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,600;1,700&display=swap" rel="stylesheet" />
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
   </head>
   <body class="min-w-[280px] bg-ink font-sans text-paper antialiased selection:bg-brand selection:text-ink">
     <Header />
@@ -48,7 +105,7 @@ const {
         if (!addButton) return;
         document.dispatchEvent(new CustomEvent(CUSTOM_EVENTS.CART_ADD, { detail: addButton.dataset.add }));
         const toast = document.querySelector('#toast')!;
-        toast.textContent = 'Смачно! Додано до кошика';
+        toast.textContent = '✓ Страву додано до кошика!';
         toast.classList.remove('translate-y-4', 'opacity-0');
         toast.classList.add('translate-y-0', 'opacity-100');
         setTimeout(() => {

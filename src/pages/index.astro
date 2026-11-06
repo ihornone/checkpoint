@@ -4,6 +4,7 @@ import { Card, dishes } from '@/features/catalog';
 import AppPhone from '@/shared/components/ui/AppPhone.astro';
 import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
 import { Routes } from '@/shared/constants/routes';
+import { PRICING_RULES } from '@/shared/constants/pricing';
 import {
   ArrowLeft,
   ArrowRight,
@@ -38,52 +39,87 @@ const categories = [
 ];
 
 const perks = [
-  { icon: Zap, title: 'Швидка доставка', text: 'від 30 хв' },
-  { icon: Leaf, title: 'Свіжі та якісні', text: 'інгредієнти' },
-  { icon: BadgeCheck, title: 'Більше 10 000', text: 'задоволених клієнтів' },
-  { icon: ChefHat, title: 'Авторські', text: 'рецепти' },
-  { icon: MapPin, title: 'У центрі Львова', text: 'зручна локація' },
+  { icon: Zap, title: 'Доставка від 30 хв', text: 'привозимо гарячим у термобоксах' },
+  { icon: Leaf, title: '100% свіже м’ясо', text: 'щоденний фарш без заморозки' },
+  { icon: BadgeCheck, title: 'Безкоштовно від 300 грн', text: 'по всій основній зоні Львова' },
+  { icon: ChefHat, title: 'Знижка −10%', text: 'на онлайн-замовлення та самовивіз' },
+  { icon: MapPin, title: 'вул. Київська, 36', text: 'затишний зал та літня тераса' },
 ];
 
 const testimonials = [
-  { name: 'Андрій К.', initial: 'А', text: 'Найкращі бургери у місті! Соковиті, великі порції і швидка доставка.' },
-  { name: 'Марія С.', initial: 'М', text: 'Дуже смачна піца, завжди свіжа і гаряча. Замовляємо вже не перший раз!' },
-  { name: 'Іван П.', initial: 'І', text: 'Зручний сервіс, приємні акції та завжди висока якість. Рекомендую!' },
+  {
+    name: 'Андрій К.',
+    initial: 'А',
+    role: 'IT-фахівець, Франківський р-н',
+    text: 'Бургер Чіфс — просто пушка: котлета з яловичини соковита, булка м’яка, а картопля фрі приїхала гарячою та хрумкою. Кур’єр впорався за 35 хвилин!',
+  },
+  {
+    name: 'Марія С.',
+    initial: 'М',
+    role: 'вул. Коновальця',
+    text: 'Пепероні та Чотири сири — найсмачніші у районі! Тісто тонке, з пухкими бортиками, сиру справді багато. Знижка 10% на сайті робить замовлення ще приємнішим.',
+  },
+  {
+    name: 'Тарас В.',
+    initial: 'Т',
+    role: 'Постійний гість',
+    text: 'Завжди беру самовивіз на Київській після роботи. Замовлення на сайті займає 1 хвилину, через 15 хвилин забираю без черги зі знижкою. Дуже чисто і привітний сервіс.',
+  },
 ];
 ---
 
-<Layout>
+<Layout
+  title="Доставка їжі Львів — гаряча піца та бургери від 30 хв"
+  description="Свіжа піца з печі, соковиті крафтові бургери, салати та комбо у Львові від CHECK POINT. Доставка від 30 хв, безкоштовно від 300 грн, знижка 10% онлайн."
+>
   <div class="mx-auto w-full max-w-[90rem] overflow-hidden px-4 pb-12 sm:px-8 lg:px-12">
     <section class="relative grid min-h-[calc(100svh-4.5rem)] items-center gap-4 py-10 sm:min-h-[calc(100svh-5rem)] sm:py-14 lg:grid-cols-[0.9fr_1.1fr]">
       <div class="relative z-10 lg:py-10">
-        <h1 class="mb-5 text-[clamp(2.6rem,8vw,6.5rem)] font-black leading-[0.93] tracking-tight text-paper">Більше ніж<br />просто <span class="text-brand">їжа</span></h1>
-        <p class="mb-7 max-w-xl text-base leading-7 text-white/75 sm:text-lg">Соковиті бургери, хрустка піца, свіжі салати та ароматна кава. Смакуй у закладі чи замовляй доставку!</p>
+        <h1 class="mb-5 text-[clamp(2.5rem,7.5vw,5.8rem)] font-black leading-[0.94] tracking-tight text-paper">
+          Гаряча піца<br />та бургери <span class="text-brand">від 30 хв.</span>
+        </h1>
+        <p class="mb-7 max-w-xl text-base leading-7 text-white/80 sm:text-lg">
+          Готуємо з-під ножа: 100% добірна фермерська яловичина, 48-годинне дозріле тісто та щедра порція тягучої моцарели. Безкоштовна доставка від {PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн або знижка 10% на самовивіз.
+        </p>
         <div class="flex flex-wrap gap-3">
-          <a href={Routes.MENU} class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-5 py-3 font-extrabold text-ink transition hover:-translate-y-0.5 hover:brightness-110"><Search size={19} /> Переглянути меню <ArrowRight size={18} /></a>
-          <a href={Routes.ABOUT} class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/25 bg-white/[0.03] px-5 py-3 font-bold text-paper transition hover:border-brand hover:text-brand"><Play size={16} fill="currentColor" /> Про нас</a>
+          <a href={Routes.MENU} class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:-translate-y-0.5 hover:brightness-110">
+            <Search size={19} /> Обрати страви в меню <ArrowRight size={18} />
+          </a>
+          <a href="#offers" class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/25 bg-white/[0.03] px-5 py-3 font-bold text-paper transition hover:border-brand hover:text-brand">
+            <Play size={16} fill="currentColor" /> Гарячі акції та комбо
+          </a>
         </div>
       </div>
       <div class="relative -mx-2 mt-2 flex min-h-64 items-center sm:min-h-80 lg:absolute lg:inset-y-0 lg:right-0 lg:mx-0 lg:mt-0 lg:w-[62%] lg:translate-x-8">
-        <img class="relative z-0 mx-auto max-h-[36rem] w-full object-contain object-center lg:object-right" src="/images/home-hero.png" alt="Бургер CHECK POINT, піца пепероні, картопля фрі та напій" fetchpriority="high" width="900" height="600" />
+        <img class="relative z-0 mx-auto max-h-[36rem] w-full object-contain object-center lg:object-right" src="/images/home-hero.png" alt="Соковитий бургер CHECK POINT, піца пепероні, хрустка картопля фрі та напій" fetchpriority="high" width="900" height="600" />
         <Crown className="absolute right-8 top-3 z-10 rotate-12 text-brand/80 sm:right-16" size={42} strokeWidth={1} />
         <span class="absolute left-8 top-0 text-5xl text-brand sm:left-16" aria-hidden="true">〃</span>
       </div>
-      <div class="relative z-10 col-span-full mt-4 grid translate-y-2 grid-cols-2 gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 sm:grid-cols-3 lg:mt-0 lg:grid-cols-5" aria-label="Переваги CHECK POINT">
+      <div class="relative z-10 col-span-full mt-4 grid translate-y-2 grid-cols-2 gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 sm:grid-cols-3 lg:mt-0 lg:grid-cols-5" aria-label="Чому обирають CHECK POINT">
         {perks.map(({ icon: Icon, title, text }) => (
-          <div class="flex items-center gap-3 bg-ink p-4 sm:p-5"><Icon className="shrink-0 text-brand" size={27} strokeWidth={1.6} /><p class="mb-0"><b class="block text-xs font-extrabold text-paper sm:text-sm">{title}</b><span class="text-xs text-white/50">{text}</span></p></div>
+          <div class="flex items-center gap-3 bg-ink p-4 sm:p-5">
+            <Icon className="shrink-0 text-brand" size={27} strokeWidth={1.6} />
+            <p class="mb-0">
+              <b class="block text-xs font-extrabold text-paper sm:text-sm">{title}</b>
+              <span class="text-xs text-white/50">{text}</span>
+            </p>
+          </div>
         ))}
       </div>
     </section>
 
     <section class="py-14 sm:py-20" id="categories">
       <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <div><h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Категорії меню <span class="text-brand">〃</span></h2></div>
-        <a href={Routes.MENU} class="inline-flex items-center gap-2 font-bold text-brand">Усі категорії <ArrowRight size={18} /></a>
+        <div>
+          <h2 class="mb-1 text-3xl font-black text-paper sm:text-4xl">Категорії меню <span class="text-brand">〃</span></h2>
+          <p class="mb-0 text-sm text-white/60 sm:text-base">Обирай те, що смакує саме сьогодні</p>
+        </div>
+        <a href={Routes.MENU} class="inline-flex items-center gap-2 font-bold text-brand transition hover:underline">Усе меню <ArrowRight size={18} /></a>
       </div>
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-7">
         {categories.map(({ name, image }, index) => (
           <a href={`/menu/?category=${encodeURIComponent(name)}`} class="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] transition hover:-translate-y-1 hover:border-brand/45">
-            <img class="aspect-square w-full object-cover transition duration-300 group-hover:scale-105" src={`/images/${image}.webp`} alt={name} loading="lazy" width="300" height="300" />
+            <img class="aspect-square w-full object-cover transition duration-300 group-hover:scale-105" src={`/images/${image}.webp`} alt={`Категорія ${name} у CHECK POINT`} loading="lazy" width="300" height="300" />
             <span class="flex items-center justify-between gap-2 px-3 py-3 text-sm font-extrabold text-paper sm:px-4 sm:text-base"><span>{name}</span><span class="text-brand">0{index + 1}</span></span>
           </a>
         ))}
@@ -92,7 +128,10 @@ const testimonials = [
 
     <section class="py-8 sm:py-12">
       <div class="mb-6 flex items-center justify-between gap-4">
-        <div><h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Хіти продажів <Crown className="inline text-brand" size={27} /></h2></div>
+        <div>
+          <h2 class="mb-1 text-3xl font-black text-paper sm:text-4xl">Хіти замовлень <Crown className="inline text-brand" size={27} /></h2>
+          <p class="mb-0 text-sm text-white/60 sm:text-base">Страви, які львів’яни обирають найчастіше</p>
+        </div>
         <div class="flex gap-2">
           <button class="grid size-10 place-items-center rounded-xl border border-white/15 text-paper transition hover:border-brand hover:text-brand" type="button" id="hits-prev" aria-label="Попередні страви"><ArrowLeft size={19} /></button>
           <button class="grid size-10 place-items-center rounded-xl bg-white/10 text-paper transition hover:bg-brand hover:text-ink" type="button" id="hits-next" aria-label="Наступні страви"><ArrowRight size={19} /></button>
@@ -105,7 +144,11 @@ const testimonials = [
 
     <section class="grid gap-4 py-12 md:grid-cols-2" id="offers">
       <a href="/menu/?category=Комбо" class="group relative min-h-56 overflow-hidden rounded-3xl border border-brand/25 bg-[#211a0b] p-6 transition hover:border-brand/60 sm:p-8">
-        <div class="relative z-10"><p class="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-brand">Смачна вигода</p><h2 class="mb-2 max-w-[15rem] text-3xl font-black text-paper">Комбо тижня</h2><p class="mb-0 text-sm text-white/65">Бургер + картопля фрі<br />+ напій на вибір</p></div>
+        <div class="relative z-10">
+          <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-brand">Смачна вигода</p>
+          <h2 class="mb-2 max-w-[15rem] text-3xl font-black text-paper">Комбо тижня</h2>
+          <p class="mb-0 max-w-xs text-sm leading-6 text-white/70">Бургер Чіфс із соковитою яловичиною + золота картопля фрі + напій на вибір.</p>
+        </div>
         <img class="absolute -bottom-3 right-0 h-[90%] w-2/3 object-contain transition group-hover:scale-105" src="/images/home-combo.png" alt="Комбо з бургером, картоплею фрі та напоєм" loading="lazy" width="400" height="300" />
         <strong class="absolute bottom-5 left-[38%] z-10 rotate-[-12deg] rounded-xl bg-brand px-3 py-1 text-2xl font-black text-ink">−20%</strong>
         <span class="absolute bottom-4 right-4 grid size-10 place-items-center rounded-xl bg-paper text-ink"><ArrowRight size={20} /></span>
@@ -113,23 +156,33 @@ const testimonials = [
       <a href="/menu/?category=Піца" class="group relative min-h-56 overflow-hidden rounded-3xl border border-white/10 bg-amber-950/30 p-6 transition hover:border-brand/50 sm:p-8">
         <img class="absolute inset-0 h-full w-full object-cover opacity-45 transition group-hover:scale-105" src="/images/home-pizza.png" alt="Піца пепероні з тягучим сиром" loading="lazy" width="600" height="400" />
         <div class="absolute inset-0 bg-ink/65"></div>
-        <div class="relative z-10"><p class="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-brand">Для піца-вечора</p><h2 class="mb-2 text-3xl font-black text-paper">Друга піца<br />зі знижкою</h2><p class="mb-0 text-sm text-white/75">Замовляй 2 піци та отримай <b class="text-brand">−30%</b> на другу</p></div>
+        <div class="relative z-10">
+          <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-brand">Для піца-вечора</p>
+          <h2 class="mb-2 text-3xl font-black text-paper">Друга піца зі знижкою</h2>
+          <p class="mb-0 text-sm leading-6 text-white/80">Замовляй дві піци 32 см на вибір та отримуй <b class="text-brand">−30%</b> на другу піцу в чеку.</p>
+        </div>
         <span class="absolute bottom-4 right-4 grid size-10 place-items-center rounded-xl bg-paper text-ink"><ArrowRight size={20} /></span>
       </a>
     </section>
 
     <section class="grid gap-6 py-10 lg:grid-cols-2">
       <div class="grid gap-5 rounded-3xl border border-white/10 bg-white/[0.03] p-4 sm:grid-cols-[0.8fr_1.2fr] sm:items-center sm:p-6">
-        <img class="aspect-[4/3] w-full rounded-2xl object-cover" src="/images/about-interior.png" alt="Теплий інтер’єр CHECK POINT" loading="lazy" width="500" height="375" />
-        <div><p class="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-brand">Про нас</p><h2 class="mb-3 text-2xl font-black text-paper">Смачно і затишно</h2><p class="mb-5 text-sm leading-6 text-white/65">CHECK POINT — це сучасний заклад із смачною їжею, затишною атмосферою та дружньою командою. Ми поєднуємо класичні рецепти й авторський підхід.</p><a href={Routes.ABOUT} class="inline-flex items-center gap-2 font-bold text-brand">Дізнатися більше <ArrowRight size={18} /></a></div>
+        <img class="aspect-[4/3] w-full rounded-2xl object-cover" src="/images/about-interior.png" alt="Затишний інтер’єр CHECK POINT у Львові" loading="lazy" width="500" height="375" />
+        <div>
+          <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-brand">Про нас</p>
+          <h2 class="mb-3 text-2xl font-black text-paper">Готуємо з душею та свіжих продуктів</h2>
+          <p class="mb-5 text-sm leading-6 text-white/70">CHECK POINT на Київській — це поєднання ресторанної якості та швидкості. Щоранку замішуємо тісто, формуємо котлети зі свіжої яловичини та варимо авторські соуси.</p>
+          <a href={Routes.ABOUT} class="inline-flex items-center gap-2 font-bold text-brand transition hover:underline">Дізнатися більше про нас <ArrowRight size={18} /></a>
+        </div>
       </div>
       <a href={Routes.DELIVERY} class="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] p-6 transition hover:border-brand/40 sm:p-8">
-        <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-brand">Обирай зручний спосіб</p><h2 class="mb-6 flex items-center gap-3 text-2xl font-black text-paper"><Bike className="text-brand" size={29} /> Доставка та самовивіз</h2>
+        <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-brand">Обирай зручний спосіб</p>
+        <h2 class="mb-6 flex items-center gap-3 text-2xl font-black text-paper"><Bike className="text-brand" size={29} /> Доставка до дверей та самовивіз</h2>
         <div class="grid grid-cols-2 gap-4 pr-10 sm:pr-16">
-          <div class="flex gap-2"><Clock className="shrink-0 text-brand" size={21} /><p class="mb-0 text-xs text-white/60"><b class="block text-paper">Час доставки</b>від 30 хв</p></div>
-          <div class="flex gap-2"><MapPin className="shrink-0 text-brand" size={21} /><p class="mb-0 text-xs text-white/60"><b class="block text-paper">Зона доставки</b>Львів та передмістя</p></div>
-          <div class="flex gap-2"><CreditCard className="shrink-0 text-brand" size={21} /><p class="mb-0 text-xs text-white/60"><b class="block text-paper">Вартість</b>від 50 грн</p></div>
-          <div class="flex gap-2"><ShoppingBag className="shrink-0 text-brand" size={21} /><p class="mb-0 text-xs text-white/60"><b class="block text-paper">Самовивіз</b>та знижка −10%</p></div>
+          <div class="flex gap-2"><Clock className="shrink-0 text-brand" size={21} /><p class="mb-0 text-xs text-white/60"><b class="block text-paper">Час доставки</b>від 30 хв у термобоксах</p></div>
+          <div class="flex gap-2"><MapPin className="shrink-0 text-brand" size={21} /><p class="mb-0 text-xs text-white/60"><b class="block text-paper">Зона покриття</b>Львів та передмістя</p></div>
+          <div class="flex gap-2"><CreditCard className="shrink-0 text-brand" size={21} /><p class="mb-0 text-xs text-white/60"><b class="block text-paper">Вартість</b>0 грн від 300 грн</p></div>
+          <div class="flex gap-2"><ShoppingBag className="shrink-0 text-brand" size={21} /><p class="mb-0 text-xs text-white/60"><b class="block text-paper">Самовивіз</b>знижка −10% за 15 хв</p></div>
         </div>
         <span class="absolute bottom-5 right-5 grid size-10 place-items-center rounded-xl bg-brand text-ink"><ArrowRight size={20} /></span>
       </a>
@@ -143,12 +196,12 @@ const testimonials = [
       <div class="relative z-10 -mt-14 grid gap-5 rounded-3xl border border-white/10 bg-ink/85 p-5 sm:contents sm:mt-0 sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0">
         <div class="relative z-10 pl-0 sm:pl-36 lg:pl-40">
           <p class="mb-2 text-xs font-extrabold uppercase tracking-[0.2em] text-brand">CHECK POINT завжди поруч</p>
-          <h2 class="mb-3 text-2xl font-black text-paper sm:text-3xl">Наш мобільний додаток</h2>
-          <p class="mb-5 max-w-lg text-sm leading-6 text-white/65">Замовляй улюблені страви, відкривай пропозиції та повертайся до смаків, які любиш.</p>
-          <a href={Routes.MENU} class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-sm font-extrabold text-ink transition hover:-translate-y-0.5">Відкрити меню <ArrowRight size={17} /></a>
+          <h2 class="mb-3 text-2xl font-black text-paper sm:text-3xl">CHECK POINT у твоєму смартфоні</h2>
+          <p class="mb-5 max-w-lg text-sm leading-6 text-white/70">Обирай улюблені страви в один клік, зберігай обране та отримуй автоматичну знижку 10% на онлайн-замовлення без зайвих дзвінків.</p>
+          <a href={Routes.MENU} class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand px-5 py-2.5 text-sm font-extrabold text-ink transition hover:-translate-y-0.5">Відкрити онлайн-меню <ArrowRight size={17} /></a>
         </div>
         <ul class="relative z-10 col-span-full grid grid-cols-2 content-center gap-x-3 gap-y-3 border-t border-white/10 pt-4 text-xs font-bold leading-5 text-paper sm:col-span-1 sm:grid-cols-1 sm:gap-3 sm:border-0 sm:pt-0 sm:text-sm lg:grid-cols-1">
-          {['Швидке замовлення', 'Персональні пропозиції', 'Улюблені страви під рукою', 'Зручне отримання'].map((item) => (
+          {['Миттєве додавання до кошика', 'Знижка 10% на онлайн-замовлення', 'Збереження обраних страв', 'Безпечна онлайн-оплата Paymock'].map((item) => (
             <li class="flex min-w-0 items-start gap-2">
               <CheckCircle className="mt-0.5 shrink-0 text-brand" size={18} />
               <span>{item}</span>
@@ -160,47 +213,61 @@ const testimonials = [
 
     <section class="py-10 sm:py-20">
       <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <div><h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Відгуки клієнтів <Star className="inline text-brand" size={27} /></h2></div>
-        <a href={Routes.REVIEWS} class="inline-flex items-center gap-2 font-bold text-brand">Усі відгуки <ArrowRight size={17} /></a>
+        <div>
+          <h2 class="mb-1 text-3xl font-black text-paper sm:text-4xl">Відгуки наших гостей <Star className="inline text-brand" size={27} /></h2>
+          <p class="mb-0 text-sm text-white/60 sm:text-base">Чесні враження від мешканців Львова</p>
+        </div>
+        <a href={Routes.REVIEWS} class="inline-flex items-center gap-2 font-bold text-brand transition hover:underline">Усі відгуки <ArrowRight size={17} /></a>
       </div>
       <div class="grid gap-4 md:grid-cols-3">
         {testimonials.map((review) => (
-          <article class="rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-            <div class="flex items-center gap-3"><span class="grid size-11 place-items-center rounded-full bg-zinc-800 font-extrabold text-paper">{review.initial}</span><div><b class="text-sm text-paper">{review.name}</b><div class="text-sm tracking-wide text-brand" aria-label="5 із 5">★★★★★</div></div></div>
-            <p class="mb-0 mt-4 text-sm leading-6 text-white/70">“{review.text}”</p>
+          <article class="flex flex-col justify-between rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+            <div>
+              <div class="flex items-center gap-3">
+                <span class="grid size-11 place-items-center rounded-full bg-zinc-800 font-extrabold text-paper">{review.initial}</span>
+                <div>
+                  <b class="text-sm text-paper">{review.name}</b>
+                  <span class="block text-xs text-white/45">{review.role}</span>
+                </div>
+              </div>
+              <div class="mt-2 text-sm tracking-wide text-brand" aria-label="Оцінка 5 із 5">★★★★★</div>
+              <p class="mb-0 mt-4 text-sm leading-6 text-white/75">“{review.text}”</p>
+            </div>
           </article>
         ))}
       </div>
     </section>
 
     <section class="overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025] p-4 sm:p-6 lg:p-8">
-      <div class="mb-6 max-w-2xl"><h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Де нас знайти?</h2></div>
+      <div class="mb-6 max-w-2xl">
+        <h2 class="mb-0 text-3xl font-black text-paper sm:text-4xl">Де нас знайти у Львові?</h2>
+      </div>
       <div class="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-stretch">
         <div class="flex flex-col items-start justify-center rounded-2xl border border-white/10 bg-ink/60 p-5 sm:p-7">
-          <p class="mb-5 flex items-start gap-3 text-sm leading-6 text-white/70">
+          <p class="mb-5 flex items-start gap-3 text-sm leading-6 text-white/75">
             <MapPin className="mt-0.5 shrink-0 text-brand" size={21} />
             <span><b class="block text-paper">Адреса</b>{RESTAURANT_CONTACTS.address}</span>
           </p>
-          <p class="mb-5 flex items-start gap-3 text-sm leading-6 text-white/70">
+          <p class="mb-5 flex items-start gap-3 text-sm leading-6 text-white/75">
             <Clock className="mt-0.5 shrink-0 text-brand" size={21} />
             <span><b class="block text-paper">Графік роботи</b>{RESTAURANT_CONTACTS.workingHours}</span>
           </p>
-          <p class="mb-6 flex items-start gap-3 text-sm leading-6 text-white/70">
+          <p class="mb-6 flex items-start gap-3 text-sm leading-6 text-white/75">
             <Phone className="mt-0.5 shrink-0 text-brand" size={21} />
-            <span><b class="block text-paper">Телефон</b>{RESTAURANT_CONTACTS.phone}</span>
+            <span><b class="block text-paper">Швидкий телефон</b>{RESTAURANT_CONTACTS.phone}</span>
           </p>
           <div class="flex flex-wrap gap-3">
-            <a href={RESTAURANT_CONTACTS.googleMapsUrl} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-extrabold text-ink">
+            <a href={RESTAURANT_CONTACTS.googleMapsUrl} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-extrabold text-ink transition hover:brightness-110">
               Прокласти маршрут <ArrowRight size={17} />
             </a>
             <a href={Routes.CONTACTS} class="inline-flex min-h-11 items-center rounded-xl border border-white/15 px-4 py-2.5 text-sm font-bold text-paper transition hover:border-brand hover:text-brand">
-              Усі контакти
+              Усі контакти та схема
             </a>
           </div>
         </div>
         <a href={Routes.CONTACTS} class="group relative min-h-64 overflow-hidden rounded-2xl border border-white/10 sm:min-h-80 lg:min-h-0">
-          <img class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" src="/images/contacts-exterior.png" alt="Затишний фасад і тераса CHECK POINT у Львові" loading="lazy" width="600" height="400" />
-          <span class="absolute inset-x-0 bottom-0 bg-ink/80 p-5 text-sm font-bold text-paper">CHECK POINT <span class="text-brand">·</span> Львів</span>
+          <img class="absolute inset-0 h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" src="/images/contacts-exterior.png" alt="Затишний фасад і тераса CHECK POINT у Львові на Київській" loading="lazy" width="600" height="400" />
+          <span class="absolute inset-x-0 bottom-0 bg-ink/80 p-5 text-sm font-bold text-paper">CHECK POINT <span class="text-brand">·</span> Львів, вул. Київська, 36</span>
         </a>
       </div>
     </section>

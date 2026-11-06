@@ -1,17 +1,27 @@
 ---
 import Layout from '@/layouts/Layout.astro';
 import { Routes } from '@/shared/constants/routes';
+import { ArrowRight, Search, Utensils } from 'lucide-react';
 ---
 
-<Layout title="Сторінку не знайдено">
-  <section class="mx-auto flex min-h-[65vh] w-full max-w-7xl flex-col items-start justify-center px-5 py-20 sm:px-8 lg:px-12">
-    <p class="mb-5 text-xs font-extrabold uppercase tracking-[0.25em] text-brand">404 / Тут нічого не подали</p>
-    <h1 class="mb-6 max-w-4xl text-5xl font-black leading-[0.98] tracking-tight text-paper sm:text-7xl lg:text-8xl">
-      Здається,<br />ти <span class="text-brand">зголоднів.</span>
+<Layout title="404 — Сторінку не знайдено · CHECK POINT" description="Здається, цієї сторінки більше немає, але в нашому меню завжди є гаряча піца, соковиті бургери та вигідні сети.">
+  <section class="mx-auto flex min-h-[70vh] w-full max-w-7xl flex-col items-start justify-center px-5 py-20 sm:px-8 lg:px-12">
+    <h1 class="mb-5 max-w-4xl text-5xl font-black leading-[0.98] tracking-tight text-paper sm:text-7xl lg:text-8xl">
+      Здається,<br />час <span class="text-brand">підкріпитися.</span>
     </h1>
-    <p class="mb-8 max-w-xl text-lg text-white/70">Цієї сторінки немає. Зате в меню є щось смачне.</p>
-    <a href={Routes.MENU} class="inline-flex min-h-12 items-center justify-center rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:-translate-y-0.5 hover:brightness-110">
-      Повернутися до меню ↗
-    </a>
+    <p class="mb-8 max-w-xl text-lg leading-7 text-white/75">
+      Сторінка, яку ти шукаєш, кудись зникла. Зате наша кухня на вул. Київській, 36 працює на повну і готова приготувати для тебе гарячу піцу, бургер чи сет!
+    </p>
+    <div class="flex flex-wrap gap-3">
+      <a href={Routes.MENU} class="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:-translate-y-0.5 hover:brightness-110">
+        <Utensils size={18} /> Перейти до меню <ArrowRight size={18} />
+      </a>
+      <a href={Routes.HOME} class="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/20 px-6 py-3 font-bold text-paper transition hover:border-brand hover:text-brand">
+        На головну
+      </a>
+      <a href={Routes.CONTACTS} class="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/20 px-6 py-3 font-bold text-paper transition hover:border-brand hover:text-brand">
+        Контакти
+      </a>
+    </div>
   </section>
 </Layout>
