@@ -1,9 +1,9 @@
-import type { Dish } from '@/features/catalog/types/menu.types';
+import type { CartDish } from '@/features/catalog/types/menu.types';
 
 export type CartMap = Record<string, number>;
 
 export interface CartItem {
-  dish: Dish;
+  dish: CartDish;
   count: number;
 }
 

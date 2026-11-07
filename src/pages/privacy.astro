@@ -1,7 +1,9 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
+import { getSiteSettings } from '@/server/db';
 import { ShieldCheck, Lock, Smartphone, Database } from 'lucide-react';
+
+const { contacts } = await getSiteSettings();
 ---
 
 <Layout
@@ -49,7 +51,7 @@ import { ShieldCheck, Lock, Smartphone, Database } from 'lucide-react';
           <ShieldCheck className="text-brand" size={24} /> Зворотний зв’язок
         </h2>
         <p class="mb-0 leading-7 text-white/70">
-          Якщо у тебе виникли запитання щодо обробки даних, ти завжди можеш звернутися до нас на email: <a class="text-brand underline hover:text-white" href={`mailto:${RESTAURANT_CONTACTS.email}`}>{RESTAURANT_CONTACTS.email}</a> або за телефоном {RESTAURANT_CONTACTS.phone}.
+          Якщо у тебе виникли запитання щодо обробки даних, ти завжди можеш звернутися до нас на email: <a class="text-brand underline hover:text-white" href={`mailto:${contacts.email}`}>{contacts.email}</a> або за телефоном {contacts.phone}.
         </p>
       </article>
     </div>

@@ -1,5 +1,5 @@
 ---
-import { SOCIAL_LINKS } from '@/shared/constants/socials';
+import { getSiteSettings } from '@/server/db';
 
 export interface Props {
   class?: string;
@@ -12,10 +12,12 @@ const {
   itemClass = 'grid size-10 place-items-center rounded-xl border border-white/15 bg-white/5 transition hover:-translate-y-0.5 hover:border-brand',
   iconClass = 'size-5',
 } = Astro.props;
+
+const { socials } = await getSiteSettings();
 ---
 
 <div class={className}>
-  {SOCIAL_LINKS.map((social) => (
+  {socials.map((social) => (
     <a
       class={itemClass}
       href={social.href}

@@ -1,15 +1,16 @@
 import type { CSSProperties } from 'react';
-import type { Dish } from '@/features/catalog/types/menu.types';
-import { getSpriteCoordinates } from '@/shared/utils/sprite';
+import type { CartDish } from '@/features/catalog/types/menu.types';
+import { getSpriteCoordinates, getSpriteIndex } from '@/shared/utils/sprite';
 
 interface CartItemPhotoProps {
-  dish: Dish;
+  dish: CartDish;
   className?: string;
 }
 
 export function CartItemPhoto({ dish, className = 'size-16 shrink-0 rounded-xl' }: CartItemPhotoProps) {
-  if (dish.sprite !== undefined && dish.sprite >= 0) {
-    const coords = getSpriteCoordinates(dish.sprite);
+  const spriteIndex = getSpriteIndex(dish.slug);
+  if (spriteIndex >= 0) {
+    const coords = getSpriteCoordinates(spriteIndex);
     return (
       <span
         className={`food-sprite object-cover ${className}`}
@@ -28,7 +29,7 @@ export function CartItemPhoto({ dish, className = 'size-16 shrink-0 rounded-xl' 
   return (
     <img
       className={`${className} object-cover`}
-      src={`/images/${dish.image}.webp`}
+      src={dish.imagePath}
       alt={dish.name}
       width="64"
       height="64"

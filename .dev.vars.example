@@ -1,0 +1,2 @@
+# Paymock merchant token (wrangler secret in production, this file for local dev)
+PAYMOCK_TOKEN=pmk_live_your_token_here

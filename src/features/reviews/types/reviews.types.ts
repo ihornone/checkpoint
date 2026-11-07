@@ -1,11 +1,15 @@
 export type ReviewCategory = 'all' | 'food' | 'delivery' | 'place';
 
-export interface ReviewItem {
+export interface Review {
   name: string;
   initial: string;
-  category: 'food' | 'delivery' | 'place';
+  category: Exclude<ReviewCategory, 'all'>;
   categoryLabel: string;
+  /** Short role line shown on the homepage testimonial cards. */
+  role: string;
   text: string;
-  image: string;
+  /** Path to the photo stored in /public/images, empty when the review has no photo. */
+  imagePath: string;
   imageAlt: string;
+  rating: number;
 }

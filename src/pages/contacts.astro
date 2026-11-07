@@ -2,8 +2,7 @@
 import Layout from '@/layouts/Layout.astro';
 import SocialLinks from '@/shared/components/layout/SocialLinks.astro';
 import PromoBanner from '@/shared/components/ui/PromoBanner.astro';
-import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
-import { Routes } from '@/shared/constants/routes';
+import { getSiteSettings } from '@/server/db';
 import {
   ArrowRight,
   Clock,
@@ -12,16 +11,16 @@ import {
   MessageCircle,
   Navigation,
   Phone,
-  Sparkles,
   UserRound,
-  Zap,
 } from 'lucide-react';
 
-const contacts = [
-  { icon: MapPin, title: 'Адреса закладу', text: `${RESTAURANT_CONTACTS.address}\n(Франківський район)` },
-  { icon: Clock, title: 'Графік роботи', text: RESTAURANT_CONTACTS.workingHoursMultiline },
-  { icon: Phone, title: 'Прямий телефон', text: `${RESTAURANT_CONTACTS.phone}\nДзвінки та Viber/Telegram` },
-  { icon: Mail, title: 'Електронна пошта', text: RESTAURANT_CONTACTS.email },
+const { contacts: info } = await getSiteSettings();
+
+const contactCards = [
+  { icon: MapPin, title: 'Адреса закладу', text: `${info.address}\n(Франківський район)` },
+  { icon: Clock, title: 'Графік роботи', text: info.workingHoursMultiline },
+  { icon: Phone, title: 'Прямий телефон', text: `${info.phone}\nДзвінки та Viber/Telegram` },
+  { icon: Mail, title: 'Електронна пошта', text: info.email },
 ];
 ---
 
@@ -39,7 +38,7 @@ const contacts = [
           Завітай до нашого закладу у Львові на смачний обід, забирай замовлення зі знижкою 10% або замовляй гарячу доставку додому.
         </p>
         <div class="flex flex-wrap gap-3">
-          <a class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:brightness-110" href={RESTAURANT_CONTACTS.phoneTel}>
+          <a class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:brightness-110" href={info.phoneTel}>
             <Phone size={20} /> Зателефонувати <ArrowRight size={18} />
           </a>
           <a class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/20 px-5 py-3 font-bold text-paper transition hover:border-brand hover:text-brand" href="#write-us">
@@ -54,7 +53,7 @@ const contacts = [
     </section>
 
     <section id="contact-details" class="grid overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] sm:grid-cols-2 lg:grid-cols-4" aria-label="Контактна інформація">
-      {contacts.map(({ icon: Icon, title, text }) => (
+      {contactCards.map(({ icon: Icon, title, text }) => (
         <div class="flex items-start gap-4 border-b border-white/10 p-5 last:border-0 sm:border-r lg:border-b-0 lg:p-6">
           <Icon className="shrink-0 text-brand" size={32} strokeWidth={1.5} />
           <div>
@@ -72,17 +71,17 @@ const contacts = [
         <p class="leading-7 text-white/75">Поруч трамвайна зупинка «Київська» — всього 3 хвилини пішки.</p>
         <p class="leading-7 text-white/75">Є зручні паркомісця для гостей закладу.</p>
         <p class="mb-6 text-sm text-white/60">Працюємо стабільно: є світло, Wi-Fi та смачна гаряча кава.</p>
-        <a href={RESTAURANT_CONTACTS.googleMapsUrl} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-5 py-3 font-extrabold text-ink transition hover:brightness-110">
+        <a href={info.googleMapsUrl} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-5 py-3 font-extrabold text-ink transition hover:brightness-110">
           <Navigation size={21} /> Відкрити в Google Maps <ArrowRight size={18} />
         </a>
       </div>
       <img class="mx-auto max-h-80 w-full object-contain" src="/delivery-map.svg" alt="Схема розташування CHECK POINT у Львові на карті" width="600" height="400" />
       <div class="grid gap-3">
         {[
-          { icon: MapPin, title: 'Адреса', text: RESTAURANT_CONTACTS.address },
-          { icon: Clock, title: 'Години роботи', text: RESTAURANT_CONTACTS.workingHours },
-          { icon: Phone, title: 'Телефон', text: RESTAURANT_CONTACTS.phone },
-          { icon: Mail, title: 'Email', text: RESTAURANT_CONTACTS.email },
+          { icon: MapPin, title: 'Адреса', text: info.address },
+          { icon: Clock, title: 'Години роботи', text: info.workingHours },
+          { icon: Phone, title: 'Телефон', text: info.phone },
+          { icon: Mail, title: 'Email', text: info.email },
         ].map(({ icon: Icon, title, text }) => (
           <div class="flex items-center gap-3 rounded-xl border border-white/10 p-3">
             <span class="grid size-7 shrink-0 place-items-center rounded-xl bg-brand text-ink"><Icon size={15} strokeWidth={2} /></span>

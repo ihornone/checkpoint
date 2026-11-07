@@ -3,15 +3,16 @@ import Layout from '@/layouts/Layout.astro';
 import Icon from '@/shared/components/ui/Icon.astro';
 import PromoBanner from '@/shared/components/ui/PromoBanner.astro';
 import { Routes } from '@/shared/constants/routes';
-import { PRICING_RULES } from '@/shared/constants/pricing';
-import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
-import { ArrowRight, ChefHat, Coins, House, Leaf, List, NotebookPen, ShieldCheck, Soup, Timer, Truck } from 'lucide-react';
+import { getSiteSettings } from '@/server/db';
+import { ArrowRight, ChefHat, Coins, House, Leaf, List, NotebookPen, ShieldCheck, Soup, Timer } from 'lucide-react';
+
+const { contacts, pricing } = await getSiteSettings();
 
 const perks = [
   { icon: Timer, title: 'Швидко', text: '30–45 хв по Львову' },
   { icon: NotebookPen, title: 'В 1 клік', text: 'Оформлення за 60 секунд' },
   { icon: ShieldCheck, title: 'Термозахист', text: 'Гаряча їжа з печі' },
-  { icon: Coins, title: 'Безкоштовно', text: `Від ${PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн по місту` },
+  { icon: Coins, title: 'Безкоштовно', text: `Від ${pricing.freeDeliveryThreshold} грн по місту` },
 ];
 
 const steps = [
@@ -28,7 +29,7 @@ const questions = [
   ],
   [
     'Яка вартість доставки та мінімальна сума замовлення?',
-    `Мінімальної суми замовлення немає — ти можеш замовити навіть одну страву. Доставка по Львову БЕЗКОШТОВНА для всіх замовлень від ${PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн. Якщо сума менша, вартість доставки становить лише ${PRICING_RULES.STANDARD_DELIVERY_FEE} грн. Для розширеної зони (передмістя) безкоштовна доставка діє від ${PRICING_RULES.EXTENDED_DELIVERY_THRESHOLD} грн.`,
+    `Мінімальної суми замовлення немає — ти можеш замовити навіть одну страву. Доставка по Львову БЕЗКОШТОВНА для всіх замовлень від ${pricing.freeDeliveryThreshold} грн. Якщо сума менша, вартість доставки становить лише ${pricing.standardDeliveryFee} грн. Для розширеної зони (передмістя) безкоштовна доставка діє від ${pricing.extendedDeliveryThreshold} грн.`,
   ],
   [
     'Як працює самовивіз та чи є знижка?',
@@ -40,7 +41,7 @@ const questions = [
   ],
   [
     'Що робити, якщо потрібно змінити адресу або уточнити статус?',
-    `Якщо замовлення вже оформлено, але кур’єр ще в дорозі, зв’яжися з нашим менеджером за телефоном ${RESTAURANT_CONTACTS.phone}. Ми оперативно допоможемо з будь-яким питанням.`,
+    `Якщо замовлення вже оформлено, але кур’єр ще в дорозі, зв’яжися з нашим менеджером за телефоном ${contacts.phone}. Ми оперативно допоможемо з будь-яким питанням.`,
   ],
 ];
 
@@ -100,10 +101,10 @@ const faqSchema = {
       <div>
         <h2 class="mb-5 text-3xl font-black text-paper">Зони доставки</h2>
         <p class="leading-7 text-white/75">
-          <b class="text-brand">Основна зона (м. Львів):</b> безкоштовна доставка для замовлень від {PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн. Доставка до 300 грн — всього {PRICING_RULES.STANDARD_DELIVERY_FEE} грн.
+          <b class="text-brand">Основна зона (м. Львів):</b> безкоштовна доставка для замовлень від {pricing.freeDeliveryThreshold} грн. Доставка до {pricing.freeDeliveryThreshold} грн — всього {pricing.standardDeliveryFee} грн.
         </p>
         <p class="leading-7 text-white/75">
-          <b class="text-brand">Передмістя Львова:</b> (Сокільники, Зимна Вода, Винники, Брюховичі, Зубра) — безкоштовно від {PRICING_RULES.EXTENDED_DELIVERY_THRESHOLD} грн або {PRICING_RULES.EXTENDED_DELIVERY_FEE} грн.
+          <b class="text-brand">Передмістя Львова:</b> (Сокільники, Зимна Вода, Винники, Брюховичі, Зубра) — безкоштовно від {pricing.extendedDeliveryThreshold} грн або {pricing.extendedDeliveryFee} грн.
         </p>
         <p class="mb-0 leading-7 text-white/60">
           Інші населені пункти — з радістю підкажемо точний час та умови за телефоном.
@@ -112,9 +113,9 @@ const faqSchema = {
       <img class="mx-auto max-h-80 w-full object-contain" src="/delivery-map.svg" alt="Карта зон доставки CHECK POINT у Львові та передмісті" width="600" height="400" />
       <div class="grid gap-3">
         {[
-          { title: 'Основна зона (Львів)', text: `Безкоштовно від ${PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн (інакше ${PRICING_RULES.STANDARD_DELIVERY_FEE} грн)`, color: 'bg-brand' },
-          { title: 'Передмістя Львова', text: `Безкоштовно від ${PRICING_RULES.EXTENDED_DELIVERY_THRESHOLD} грн (інакше ${PRICING_RULES.EXTENDED_DELIVERY_FEE} грн)`, color: 'bg-brand/20' },
-          { title: 'Самовивіз з закладу', text: 'Знижка −10% та готовність за 15–20 хв', color: 'bg-white/20' },
+          { title: 'Основна зона (Львів)', text: `Безкоштовно від ${pricing.freeDeliveryThreshold} грн (інакше ${pricing.standardDeliveryFee} грн)`, color: 'bg-brand' },
+          { title: 'Передмістя Львова', text: `Безкоштовно від ${pricing.extendedDeliveryThreshold} грн (інакше ${pricing.extendedDeliveryFee} грн)`, color: 'bg-brand/20' },
+          { title: 'Самовивіз з закладу', text: `Знижка −${pricing.onlineDiscountPercent}% та готовність за 15–20 хв`, color: 'bg-white/20' },
         ].map((zone) => (
           <div class="flex items-center gap-3 rounded-xl border border-white/10 p-3">
             <span class={`size-7 shrink-0 rounded-xl ${zone.color}`}></span>
@@ -160,20 +161,20 @@ const faqSchema = {
         <p class="mb-5 text-sm text-white/60">Жодних прихованих сервісних зборів чи неочікуваних доплат</p>
         <dl class="divide-y divide-white/10">
           <div class="flex items-center justify-between gap-3 py-4">
-            <dt class="text-sm text-white/70 sm:text-base">Замовлення від {PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн по Львову</dt>
+            <dt class="text-sm text-white/70 sm:text-base">Замовлення від {pricing.freeDeliveryThreshold} грн по Львову</dt>
             <dd class="rounded-xl bg-brand px-3 py-1 text-xs font-extrabold text-ink sm:text-sm">0 грн (Безкоштовно)</dd>
           </div>
           <div class="flex items-center justify-between gap-3 py-4">
-            <dt class="text-sm text-white/70 sm:text-base">Замовлення до {PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн по Львову</dt>
-            <dd class="whitespace-nowrap font-bold text-paper"><b class="text-xl">{PRICING_RULES.STANDARD_DELIVERY_FEE}</b> грн</dd>
+            <dt class="text-sm text-white/70 sm:text-base">Замовлення до {pricing.freeDeliveryThreshold} грн по Львову</dt>
+            <dd class="whitespace-nowrap font-bold text-paper"><b class="text-xl">{pricing.standardDeliveryFee}</b> грн</dd>
           </div>
           <div class="flex items-center justify-between gap-3 py-4">
-            <dt class="text-sm text-white/70 sm:text-base">Передмістя Львова (від {PRICING_RULES.EXTENDED_DELIVERY_THRESHOLD} грн)</dt>
-            <dd class="whitespace-nowrap font-bold text-paper"><b class="text-xl">0 грн</b> / від {PRICING_RULES.EXTENDED_DELIVERY_FEE} грн</dd>
+            <dt class="text-sm text-white/70 sm:text-base">Передмістя Львова (від {pricing.extendedDeliveryThreshold} грн)</dt>
+            <dd class="whitespace-nowrap font-bold text-paper"><b class="text-xl">0 грн</b> / від {pricing.extendedDeliveryFee} грн</dd>
           </div>
           <div class="flex items-center justify-between gap-3 py-4">
             <dt class="text-sm text-white/70 sm:text-base">Самовивіз (вул. Київська, 36)</dt>
-            <dd class="rounded-xl border border-brand/40 bg-brand/10 px-3 py-1 text-xs font-extrabold text-brand sm:text-sm">Знижка −10%</dd>
+            <dd class="rounded-xl border border-brand/40 bg-brand/10 px-3 py-1 text-xs font-extrabold text-brand sm:text-sm">Знижка −{pricing.onlineDiscountPercent}%</dd>
           </div>
         </dl>
       </div>
@@ -182,7 +183,7 @@ const faqSchema = {
     <section class="grid gap-7 lg:grid-cols-[0.7fr_1.3fr]" id="faq">
       <div class="lg:sticky lg:top-24 lg:self-start">
         <h2 class="mb-3 text-3xl font-black leading-tight text-paper sm:text-4xl">Часті запитання про доставку</h2>
-        <p class="text-sm leading-6 text-white/60">Не знайшов відповіді? Зателефонуй нам за номером {RESTAURANT_CONTACTS.phone} — ми завжди на зв’язку.</p>
+        <p class="text-sm leading-6 text-white/60">Не знайшов відповіді? Зателефонуй нам за номером {contacts.phone} — ми завжди на зв’язку.</p>
       </div>
       <div class="grid content-start gap-3">
         {questions.map(([question, answer]) => (

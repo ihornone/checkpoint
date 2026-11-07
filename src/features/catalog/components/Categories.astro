@@ -1,13 +1,14 @@
 ---
-import { categories } from '../data/menu';
+import type { MenuCategory } from '../types/menu.types';
 import Icon, { type IconName } from '@/shared/components/ui/Icon.astro';
 
 export interface Props {
+  categories: MenuCategory[];
   all?: boolean;
   class?: string;
 }
 
-const { all = false, class: className = '' } = Astro.props;
+const { categories, all = false, class: className = '' } = Astro.props;
 ---
 
 <div class:list={['category-tabs grid grid-cols-2 gap-2 sm:grid-cols-3 lg:flex lg:flex-wrap lg:gap-3', className]} role="group" aria-label="Категорії меню">

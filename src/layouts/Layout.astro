@@ -3,7 +3,8 @@ import '@/styles/global.css';
 import Header from '@/shared/components/layout/Header.astro';
 import Footer from '@/shared/components/layout/Footer.astro';
 import CartDrawer from '@/features/cart/components/CartDrawer';
-import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
+import { getDishes, getSiteSettings } from '@/server/db';
+import type { CartDish } from '@/features/catalog/types/menu.types';
 
 export interface Props {
   title?: string;
@@ -11,9 +12,18 @@ export interface Props {
   schema?: Record<string, any>;
 }
 
+const settings = await getSiteSettings();
+const { contacts, pricing } = settings;
+const cartDishes: CartDish[] = (await getDishes()).map(({ slug, name, price, imagePath }) => ({
+  slug,
+  name,
+  price,
+  imagePath,
+}));
+
 const {
   title = 'Доставка їжі у Львові — піца, бургери та сети',
-  description = `${RESTAURANT_CONTACTS.name} — ресторан гарячої доставки у Львові. Соковиті крафтові бургери, хрустка піца 32 см, свіжі салати та комбо. Доставка від 30 хв.`,
+  description = `${contacts.name} — ресторан гарячої доставки у Львові. Соковиті крафтові бургери, хрустка піца 32 см, свіжі салати та комбо. Доставка від 30 хв.`,
   schema,
 } = Astro.props;
 
@@ -22,10 +32,10 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://checkpoi
 const defaultRestaurantSchema = {
   '@context': 'https://schema.org',
   '@type': 'FastFoodRestaurant',
-  name: RESTAURANT_CONTACTS.name,
+  name: contacts.name,
   image: 'https://checkpoint.food/images/home-hero.png',
-  telephone: RESTAURANT_CONTACTS.phoneRaw,
-  email: RESTAURANT_CONTACTS.email,
+  telephone: contacts.phoneRaw,
+  email: contacts.email,
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'вул. Київська, 36',
@@ -60,20 +70,20 @@ const pageSchema = schema || defaultRestaurantSchema;
     <meta name="description" content={description} />
     <meta name="theme-color" content="#090909" />
     <link rel="canonical" href={canonicalUrl} />
-    <title>{title} · {RESTAURANT_CONTACTS.name}</title>
+    <title>{title} · {contacts.name}</title>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:site_name" content={RESTAURANT_CONTACTS.name} />
-    <meta property="og:title" content={`${title} · ${RESTAURANT_CONTACTS.name}`} />
+    <meta property="og:site_name" content={contacts.name} />
+    <meta property="og:title" content={`${title} · ${contacts.name}`} />
     <meta property="og:description" content={description} />
     <meta property="og:locale" content="uk_UA" />
     <meta property="og:image" content="/images/home-hero.png" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={`${title} · ${RESTAURANT_CONTACTS.name}`} />
+    <meta name="twitter:title" content={`${title} · ${contacts.name}`} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content="/images/home-hero.png" />
 
@@ -86,13 +96,13 @@ const pageSchema = schema || defaultRestaurantSchema;
     <script type="application/ld+json" set:html={JSON.stringify(pageSchema)} />
   </head>
   <body class="min-w-[280px] bg-ink font-sans text-paper antialiased selection:bg-brand selection:text-ink">
-    <Header />
+    <Header contacts={contacts} />
 
     <main class="min-w-0 overflow-x-clip"><slot /></main>
 
-    <Footer />
+    <Footer contacts={contacts} />
 
-    <CartDrawer client:load />
+    <CartDrawer client:load dishes={cartDishes} pricing={pricing} />
     <div class="pointer-events-none fixed bottom-5 left-1/2 z-[100] -translate-x-1/2 translate-y-4 rounded-xl bg-brand px-5 py-3 text-sm font-extrabold text-ink opacity-0 transition" id="toast" role="status"></div>
 
     <script>
@@ -169,12 +179,12 @@ const pageSchema = schema || defaultRestaurantSchema;
 
       // 4. Reveal animation engine
       if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        const finish = (element: Element) => {
+        const finish = (element: HTMLElement) => {
           element.classList.remove('anim-hide', 'anim-load', 'is-in');
           element.style.removeProperty('--anim-delay');
         };
 
-        const revealElement = (element: Element) => {
+        const revealElement = (element: HTMLElement) => {
           if (!element.classList.contains('anim-hide')) return;
           element.classList.add('is-in');
           const delay = (Number.parseFloat(getComputedStyle(element).transitionDelay) || 0) * 1000;
@@ -182,7 +192,7 @@ const pageSchema = schema || defaultRestaurantSchema;
         };
 
         const revealInView = () => {
-          document.querySelectorAll('.anim-hide:not(.is-in)').forEach((element) => {
+          document.querySelectorAll<HTMLElement>('.anim-hide:not(.is-in)').forEach((element) => {
             const rect = element.getBoundingClientRect();
             if (rect.top < innerHeight && rect.bottom > 0) revealElement(element);
           });
@@ -190,17 +200,17 @@ const pageSchema = schema || defaultRestaurantSchema;
 
         const observer = new IntersectionObserver(
           (entries) => {
-            for (const entry of entries) {
-              if (entry.isIntersecting) {
-                observer.unobserve(entry.target);
-                revealElement(entry.target);
-              }
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              observer.unobserve(entry.target);
+              revealElement(entry.target as HTMLElement);
             }
+          }
           },
           { threshold: 0.05, rootMargin: '0px 0px -4% 0px' },
         );
 
-        const prepare = (element: Element, delay: number) => {
+        const prepare = (element: HTMLElement, delay: number) => {
           if (element.classList.contains('anim-hide') || element.classList.contains('anim-load') || element.classList.contains('is-in')) return;
           const rect = element.getBoundingClientRect();
           if (rect.top < innerHeight && rect.bottom > 0) {
@@ -214,16 +224,16 @@ const pageSchema = schema || defaultRestaurantSchema;
           }
         };
 
-        document.querySelectorAll('main article').forEach((element) => prepare(element, 0));
+        document.querySelectorAll('main article').forEach((element) => prepare(element as HTMLElement, 0));
 
         document.querySelectorAll('main section, footer > div').forEach((block) => {
           Array.from(block.children).forEach((child, index) => {
             if (child.tagName === 'ARTICLE' || child.classList.contains('anim-hide') || child.classList.contains('anim-load')) return;
             const baseDelay = Math.min(index * 45, 180);
             if (child.matches('[class*="grid"]')) {
-              Array.from(child.children).forEach((item, itemIndex) => prepare(item, baseDelay + Math.min((itemIndex + 1) * 35, 140)));
+              Array.from(child.children).forEach((item, itemIndex) => prepare(item as HTMLElement, baseDelay + Math.min((itemIndex + 1) * 35, 140)));
             } else {
-              prepare(child, baseDelay);
+              prepare(child as HTMLElement, baseDelay);
             }
           });
         });

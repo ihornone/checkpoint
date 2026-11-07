@@ -1,7 +1,7 @@
 ---
 import { ArrowRight } from 'lucide-react';
 import { Routes } from '@/shared/constants/routes';
-import { PRICING_RULES } from '@/shared/constants/pricing';
+import { getPricing } from '@/server/db';
 
 export interface Props {
   class?: string;
@@ -9,11 +9,9 @@ export interface Props {
   discountPercent?: number;
 }
 
-const {
-  class: className = '',
-  href = Routes.MENU,
-  discountPercent = PRICING_RULES.ONLINE_DISCOUNT_PERCENT,
-} = Astro.props;
+const { class: className = '', href = Routes.MENU, discountPercent } = Astro.props;
+const { onlineDiscountPercent } = await getPricing();
+const discount = discountPercent ?? onlineDiscountPercent;
 ---
 
 <a
@@ -25,7 +23,7 @@ const {
 >
   <div class="relative z-10 max-w-2xl">
     <h2 class="mb-2 text-xl font-black leading-tight text-paper sm:text-3xl">
-      Замовляй онлайн або обирай самовивіз — отримай <em class="not-italic text-brand">знижку {discountPercent}%</em>
+      Замовляй онлайн або обирай самовивіз — отримай <em class="not-italic text-brand">знижку {discount}%</em>
     </h2>
     <p class="mb-0 text-xs text-white/60 sm:text-sm">Безкоштовна доставка по Львову від 300 грн · Готуємо з-під ножа за 15–20 хвилин</p>
   </div>

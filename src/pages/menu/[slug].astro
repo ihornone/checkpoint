@@ -1,27 +1,29 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { Card, FoodPhoto, dishes } from '@/features/catalog';
+import { Card, FoodPhoto } from '@/features/catalog';
 import Icon from '@/shared/components/ui/Icon.astro';
 import { Routes } from '@/shared/constants/routes';
-import { PRICING_RULES } from '@/shared/constants/pricing';
-import { BadgeCheck, Bike, Clock, ShieldCheck, Sparkles } from 'lucide-react';
+import { getDishBySlug, getRelatedDishes, getSiteSettings } from '@/server/db';
+import { Bike, Clock, Sparkles } from 'lucide-react';
 
-export function getStaticPaths() {
-  return dishes.map((dish) => ({ params: { slug: dish.slug }, props: { dish } }));
+const { slug } = Astro.params;
+const dish = slug ? await getDishBySlug(slug) : undefined;
+if (!dish) {
+  return Astro.rewrite('/404');
 }
 
-const { dish } = Astro.props;
-const related = dishes.filter((item) => item.category === dish.category && item.slug !== dish.slug).slice(0, 4);
+const { pricing } = await getSiteSettings();
+const related = (await getRelatedDishes(dish.category, dish.slug)).slice(0, 4);
 
 const pageTitle = `${dish.name} — доставка та замовлення у Львові`;
-const pageDescription = `${dish.name} (${dish.portion}) за ціною ${dish.price} грн від CHECK POINT. ${dish.description} Гаряча доставка по Львову від 30 хв, безкоштовно від ${PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн.`;
+const pageDescription = `${dish.name} (${dish.portion}) за ціною ${dish.price} грн від CHECK POINT. ${dish.description} Гаряча доставка по Львову від 30 хв, безкоштовно від ${pricing.freeDeliveryThreshold} грн.`;
 
 const dishSchema = {
   '@context': 'https://schema.org',
   '@type': 'MenuItem',
   name: dish.name,
   description: dish.description,
-  image: `https://checkpoint.food/images/${dish.image}.webp`,
+  image: `https://checkpoint.food${dish.imagePath}`,
   offers: {
     '@type': 'Offer',
     price: dish.price,
@@ -85,7 +87,7 @@ const dishSchema = {
           </div>
           <div class="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] p-2.5 text-white/70">
             <Bike size={16} className="text-brand shrink-0" />
-            <span>0 грн від {PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн</span>
+            <span>0 грн від {pricing.freeDeliveryThreshold} грн</span>
           </div>
           <div class="col-span-2 flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] p-2.5 text-white/70 sm:col-span-1">
             <Sparkles size={16} className="text-brand shrink-0" />

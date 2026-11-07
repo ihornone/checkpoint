@@ -1,24 +1,14 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
+import cloudflare from '@astrojs/cloudflare';
 
 export default defineConfig({
-  output: 'static',
+  output: 'server',
+  adapter: cloudflare(),
   devToolbar: { enabled: false },
   integrations: [react()],
   vite: {
     plugins: [tailwindcss()],
-    server: {
-      proxy: {
-        '/paymock-api': {
-          target: 'https://paymock.ihornone.site',
-          changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/paymock-api/, ''),
-          headers: {
-            'X-Token': process.env.PAYMOCK_TOKEN || '',
-          },
-        },
-      },
-    },
   },
 });

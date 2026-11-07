@@ -1,10 +1,9 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { Card, dishes } from '@/features/catalog';
+import { Card } from '@/features/catalog';
 import AppPhone from '@/shared/components/ui/AppPhone.astro';
-import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
 import { Routes } from '@/shared/constants/routes';
-import { PRICING_RULES } from '@/shared/constants/pricing';
+import { getCategories, getFeaturedReviews, getPopularDishes, getSiteSettings } from '@/server/db';
 import {
   ArrowLeft,
   ArrowRight,
@@ -25,46 +24,20 @@ import {
   Zap,
 } from 'lucide-react';
 
-const popularSlugs = ['chief-burger', 'pepperoni', 'cezar-chicken', 'chicken-wrap', 'four-cheese', 'cheesecake'];
-const popular = popularSlugs.map((slug) => dishes.find((dish) => dish.slug === slug)!).filter(Boolean);
-
-const categories = [
-  { name: 'Піца', image: 'pizza-pepperoni' },
-  { name: 'Бургери', image: 'burger' },
-  { name: 'Салати', image: 'salad' },
-  { name: 'Закуски', image: 'fries' },
-  { name: 'Напої', image: 'drink' },
-  { name: 'Десерти', image: 'cake' },
-  { name: 'Комбо', image: 'combo' },
-];
+const [settings, categories, popular, testimonials] = await Promise.all([
+  getSiteSettings(),
+  getCategories(),
+  getPopularDishes(),
+  getFeaturedReviews(),
+]);
+const { contacts, pricing } = settings;
 
 const perks = [
   { icon: Zap, title: 'Доставка від 30 хв', text: 'привозимо гарячим у термобоксах' },
   { icon: Leaf, title: '100% свіже м’ясо', text: 'щоденний фарш без заморозки' },
-  { icon: BadgeCheck, title: 'Безкоштовно від 300 грн', text: 'по всій основній зоні Львова' },
-  { icon: ChefHat, title: 'Знижка −10%', text: 'на онлайн-замовлення та самовивіз' },
+  { icon: BadgeCheck, title: `Безкоштовно від ${pricing.freeDeliveryThreshold} грн`, text: 'по всій основній зоні Львова' },
+  { icon: ChefHat, title: `Знижка −${pricing.onlineDiscountPercent}%`, text: 'на онлайн-замовлення та самовивіз' },
   { icon: MapPin, title: 'вул. Київська, 36', text: 'затишний зал та літня тераса' },
-];
-
-const testimonials = [
-  {
-    name: 'Андрій К.',
-    initial: 'А',
-    role: 'IT-фахівець, Франківський р-н',
-    text: 'Бургер Чіфс — просто пушка: котлета з яловичини соковита, булка м’яка, а картопля фрі приїхала гарячою та хрумкою. Кур’єр впорався за 35 хвилин!',
-  },
-  {
-    name: 'Марія С.',
-    initial: 'М',
-    role: 'вул. Коновальця',
-    text: 'Пепероні та Чотири сири — найсмачніші у районі! Тісто тонке, з пухкими бортиками, сиру справді багато. Знижка 10% на сайті робить замовлення ще приємнішим.',
-  },
-  {
-    name: 'Тарас В.',
-    initial: 'Т',
-    role: 'Постійний гість',
-    text: 'Завжди беру самовивіз на Київській після роботи. Замовлення на сайті займає 1 хвилину, через 15 хвилин забираю без черги зі знижкою. Дуже чисто і привітний сервіс.',
-  },
 ];
 ---
 
@@ -79,7 +52,7 @@ const testimonials = [
           Гаряча піца<br />та бургери <span class="text-brand">від 30 хв.</span>
         </h1>
         <p class="mb-7 max-w-xl text-base leading-7 text-white/80 sm:text-lg">
-          Готуємо з-під ножа: 100% добірна фермерська яловичина, 48-годинне дозріле тісто та щедра порція тягучої моцарели. Безкоштовна доставка від {PRICING_RULES.FREE_DELIVERY_THRESHOLD} грн або знижка 10% на самовивіз.
+          Готуємо з-під ножа: 100% добірна фермерська яловичина, 48-годинне дозріле тісто та щедра порція тягучої моцарели. Безкоштовна доставка від {pricing.freeDeliveryThreshold} грн або знижка {pricing.onlineDiscountPercent}% на самовивіз.
         </p>
         <div class="flex flex-wrap gap-3">
           <a href={Routes.MENU} class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:-translate-y-0.5 hover:brightness-110">
@@ -117,9 +90,9 @@ const testimonials = [
         <a href={Routes.MENU} class="inline-flex items-center gap-2 font-bold text-brand transition hover:underline">Усе меню <ArrowRight size={18} /></a>
       </div>
       <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 xl:grid-cols-7">
-        {categories.map(({ name, image }, index) => (
+        {categories.map(({ name, imagePath }, index) => (
           <a href={`/menu/?category=${encodeURIComponent(name)}`} class="group overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] transition hover:-translate-y-1 hover:border-brand/45">
-            <img class="aspect-square w-full object-cover transition duration-300 group-hover:scale-105" src={`/images/${image}.webp`} alt={`Категорія ${name} у CHECK POINT`} loading="lazy" width="300" height="300" />
+            <img class="aspect-square w-full object-cover transition duration-300 group-hover:scale-105" src={imagePath} alt={`Категорія ${name} у CHECK POINT`} loading="lazy" width="300" height="300" />
             <span class="flex items-center justify-between gap-2 px-3 py-3 text-sm font-extrabold text-paper sm:px-4 sm:text-base"><span>{name}</span><span class="text-brand">0{index + 1}</span></span>
           </a>
         ))}
@@ -230,7 +203,7 @@ const testimonials = [
                   <span class="block text-xs text-white/45">{review.role}</span>
                 </div>
               </div>
-              <div class="mt-2 text-sm tracking-wide text-brand" aria-label="Оцінка 5 із 5">★★★★★</div>
+              <div class="mt-2 text-sm tracking-wide text-brand" aria-label={`Оцінка ${review.rating} із 5`}>{'★'.repeat(review.rating)}</div>
               <p class="mb-0 mt-4 text-sm leading-6 text-white/75">“{review.text}”</p>
             </div>
           </article>
@@ -246,18 +219,18 @@ const testimonials = [
         <div class="flex flex-col items-start justify-center rounded-2xl border border-white/10 bg-ink/60 p-5 sm:p-7">
           <p class="mb-5 flex items-start gap-3 text-sm leading-6 text-white/75">
             <MapPin className="mt-0.5 shrink-0 text-brand" size={21} />
-            <span><b class="block text-paper">Адреса</b>{RESTAURANT_CONTACTS.address}</span>
+            <span><b class="block text-paper">Адреса</b>{contacts.address}</span>
           </p>
           <p class="mb-5 flex items-start gap-3 text-sm leading-6 text-white/75">
             <Clock className="mt-0.5 shrink-0 text-brand" size={21} />
-            <span><b class="block text-paper">Графік роботи</b>{RESTAURANT_CONTACTS.workingHours}</span>
+            <span><b class="block text-paper">Графік роботи</b>{contacts.workingHours}</span>
           </p>
           <p class="mb-6 flex items-start gap-3 text-sm leading-6 text-white/75">
             <Phone className="mt-0.5 shrink-0 text-brand" size={21} />
-            <span><b class="block text-paper">Швидкий телефон</b>{RESTAURANT_CONTACTS.phone}</span>
+            <span><b class="block text-paper">Швидкий телефон</b>{contacts.phone}</span>
           </p>
           <div class="flex flex-wrap gap-3">
-            <a href={RESTAURANT_CONTACTS.googleMapsUrl} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-extrabold text-ink transition hover:brightness-110">
+            <a href={contacts.googleMapsUrl} target="_blank" rel="noopener noreferrer" class="inline-flex min-h-11 items-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-extrabold text-ink transition hover:brightness-110">
               Прокласти маршрут <ArrowRight size={17} />
             </a>
             <a href={Routes.CONTACTS} class="inline-flex min-h-11 items-center rounded-xl border border-white/15 px-4 py-2.5 text-sm font-bold text-paper transition hover:border-brand hover:text-brand">

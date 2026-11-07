@@ -1,13 +1,19 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Drawer } from 'vaul';
-import { dishes } from '@/features/catalog/data/menu';
+import type { CartDish } from '@/features/catalog/types/menu.types';
+import type { PricingRules } from '@/shared/types/site';
 import { CartItemPhoto } from './CartItemPhoto';
 import { STORAGE_KEYS } from '@/shared/constants/storage';
 import { CUSTOM_EVENTS } from '@/shared/constants/events';
-import { PRICING_RULES } from '@/shared/constants/pricing';
 import type { CartMap, DeliveryMethod, CheckoutStatus, StoredOrder } from '../types/cart.types';
 
-function readCart(): CartMap {
+interface CartDrawerProps {
+  /** Dishes loaded from D1 on the server and passed down from Layout. */
+  dishes: CartDish[];
+  pricing: PricingRules;
+}
+
+function readCart(dishes: CartDish[]): CartMap {
   try {
     const raw = localStorage.getItem(STORAGE_KEYS.CART);
     if (!raw) return {};
@@ -25,7 +31,7 @@ function readCart(): CartMap {
   }
 }
 
-export default function CartDrawer() {
+export default function CartDrawer({ dishes, pricing }: CartDrawerProps) {
   const [open, setOpen] = useState(false);
   const [cart, setCart] = useState<CartMap>({});
   const [direction, setDirection] = useState<'bottom' | 'right'>('bottom');
@@ -33,7 +39,7 @@ export default function CartDrawer() {
   const [status, setStatus] = useState<CheckoutStatus>({ kind: 'idle', text: '' });
 
   useEffect(() => {
-    setCart(readCart());
+    setCart(readCart(dishes));
     const mq = matchMedia('(min-width: 640px)');
     const apply = () => setDirection(mq.matches ? 'right' : 'bottom');
     apply();
@@ -75,32 +81,22 @@ export default function CartDrawer() {
     const data = new FormData(event.target as HTMLFormElement);
     setStatus({ kind: 'pending', text: 'Створюємо рахунок…' });
     try {
-      const response = await fetch('/paymock-api/api/merchant/invoice/create', {
+      const response = await fetch('/api/orders', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: total * 100,
-          ccy: PRICING_RULES.CURRENCY_CODE_UAH,
-          redirectUrl: `${location.origin}/payment/`,
-          merchantPaymInfo: {
-            reference: `order-${Date.now()}`,
-            destination: 'Замовлення CHECK POINT',
-            customerName: data.get('name'),
-            customerPhone: data.get('phone'),
-            deliveryMethod: method,
-            deliveryAddress: data.get('address') || undefined,
-            basketOrder: items.map(({ dish, count }) => ({
-              name: dish.name,
-              qty: count,
-              price: dish.price,
-              sum: dish.price * count,
-              image: `${location.origin}/images/${dish.image}.webp`,
-            })),
-          },
+          name: data.get('name'),
+          phone: data.get('phone'),
+          method,
+          address: data.get('address') || undefined,
+          items: items.map(({ dish, count }) => ({ slug: dish.slug, qty: count })),
         }),
       });
-      if (!response.ok) throw new Error(`Paymock: ${response.status}`);
-      const invoice = await response.json();
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(payload?.error || `HTTP ${response.status}`);
+      }
+      const invoice = (await response.json()) as { invoiceId: string; pageUrl: string };
       const lastOrder: StoredOrder = {
         invoiceId: invoice.invoiceId,
         total,
@@ -193,18 +189,18 @@ export default function CartDrawer() {
                 </div>
                 {method === 'Доставка' && (
                   <div className="mt-2 text-xs leading-5">
-                    {total >= PRICING_RULES.FREE_DELIVERY_THRESHOLD ? (
+                    {total >= pricing.freeDeliveryThreshold ? (
                       <span className="font-bold text-brand">🎉 Доставка по Львову для тебе БЕЗКОШТОВНА!</span>
                     ) : (
                       <span className="text-white/55">
-                        Додай страв ще на <b className="text-paper">{PRICING_RULES.FREE_DELIVERY_THRESHOLD - total} грн</b> для безкоштовної доставки по місту.
+                        Додай страв ще на <b className="text-paper">{pricing.freeDeliveryThreshold - total} грн</b> для безкоштовної доставки по місту.
                       </span>
                     )}
                   </div>
                 )}
                 {method === 'Самовивіз' && (
                   <p className="mt-1 text-xs text-brand font-bold">
-                    ✓ Самовивіз на вул. Київській, 36 зі знижкою 10% (готовність 15–20 хв)
+                    ✓ Самовивіз на вул. Київській, 36 зі знижкою −{pricing.onlineDiscountPercent}% (готовність 15–20 хв)
                   </p>
                 )}
               </div>
@@ -229,7 +225,7 @@ export default function CartDrawer() {
                       value={method}
                       onChange={(event) => setMethod((event.target as HTMLSelectElement).value as DeliveryMethod)}
                     >
-                      <option value="Самовивіз">Самовивіз (вул. Київська, 36) — знижка −10%</option>
+                      <option value="Самовивіз">Самовивіз (вул. Київська, 36) — знижка −{pricing.onlineDiscountPercent}%</option>
                       <option value="Доставка">Кур’єрська доставка по Львову та передмістю</option>
                     </select>
                     <svg className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-brand" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg>

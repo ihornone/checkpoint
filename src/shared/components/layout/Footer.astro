@@ -3,7 +3,13 @@ import Logo from '@/shared/components/ui/Logo.astro';
 import Icon from '@/shared/components/ui/Icon.astro';
 import SocialLinks from '@/shared/components/layout/SocialLinks.astro';
 import { Routes } from '@/shared/constants/routes';
-import { RESTAURANT_CONTACTS } from '@/shared/constants/contacts';
+import type { Contacts } from '@/shared/types/site';
+
+export interface Props {
+  contacts: Contacts;
+}
+
+const { contacts } = Astro.props;
 
 const FOOTER_NAV_LINKS = [
   { href: Routes.MENU, label: 'Меню' },
@@ -34,7 +40,7 @@ const FOOTER_NAV_LINKS = [
     <div class="grid gap-4 border-b border-white/10 py-6 text-xs leading-5 text-white/45 sm:grid-cols-2">
       <p class="mb-0">
         <b class="text-white/75">Контакти</b><br />
-        {RESTAURANT_CONTACTS.phone} · {RESTAURANT_CONTACTS.workingHours}
+        {contacts.phone} · {contacts.workingHours}
       </p>
       <div class="mb-0">
         <b class="text-white/75">Соцмережі</b>
@@ -44,7 +50,7 @@ const FOOTER_NAV_LINKS = [
       </div>
     </div>
     <div class="flex flex-wrap items-center justify-between gap-3 pt-5 text-xs text-white/40">
-      <span>© 2026 {RESTAURANT_CONTACTS.name}</span>
+      <span>© 2026 {contacts.name}</span>
       <a class="hover:text-brand" href={Routes.PRIVACY}>Конфіденційність</a>
     </div>
   </div>

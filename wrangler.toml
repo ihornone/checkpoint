@@ -1,6 +1,15 @@
 name = "checkpoint"
-main = "src/worker.ts"
+account_id = "5475069d070ecc965aa874c39f849928"
+main = "@astrojs/cloudflare/entrypoints/server"
 compatibility_date = "2026-11-01"
+compatibility_flags = ["nodejs_compat"]
 
 [assets]
 directory = "./dist"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "checkpoint-db"
+database_id = "9a507f7c-bcc7-4352-9ccf-1208b73a2da5"
+migrations_dir = "migrations"

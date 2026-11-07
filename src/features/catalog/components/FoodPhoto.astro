@@ -1,6 +1,6 @@
 ---
 import type { Dish } from '../types/menu.types';
-import { getSpriteCoordinates } from '@/shared/utils/sprite';
+import { getSpriteCoordinates, getSpriteIndex } from '@/shared/utils/sprite';
 
 export interface Props {
   dish: Dish;
@@ -9,7 +9,7 @@ export interface Props {
 }
 
 const { dish, loading = 'lazy', class: customClass = '' } = Astro.props;
-const index = dish.sprite ?? -1;
+const index = getSpriteIndex(dish.slug);
 const coords = getSpriteCoordinates(index);
 const row = Math.floor(index / 4);
 const spriteStyle = `--sprite-x: ${coords.x}; --sprite-y: ${coords.y};`;
@@ -25,7 +25,7 @@ const spriteStyle = `--sprite-x: ${coords.x}; --sprite-y: ${coords.y};`;
 ) : (
   <img
     class:list={['food-visual aspect-[4/3] w-full object-cover', customClass]}
-    src={`/images/${dish.image}.webp`}
+    src={dish.imagePath}
     alt={dish.name}
     loading={loading}
     width="400"

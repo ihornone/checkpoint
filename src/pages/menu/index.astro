@@ -1,8 +1,11 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { Card, Categories, FilterScript, dishes } from '@/features/catalog';
+import { Card, Categories, FilterScript } from '@/features/catalog';
 import Icon from '@/shared/components/ui/Icon.astro';
 import { Routes } from '@/shared/constants/routes';
+import { getCategories, getDishes } from '@/server/db';
+
+const [dishes, categories] = await Promise.all([getDishes(), getCategories()]);
 ---
 
 <Layout
@@ -19,7 +22,7 @@ import { Routes } from '@/shared/constants/routes';
       </p>
     </div>
 
-    <Categories all />
+    <Categories categories={categories} all />
 
     <div class="my-8 flex flex-wrap items-center gap-3">
       <input
