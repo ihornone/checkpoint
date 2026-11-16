@@ -1,8 +1,10 @@
 ---
 import '@/styles/global.css';
+import 'sonner/dist/styles.css';
 import Header from '@/shared/components/layout/Header.astro';
 import Footer from '@/shared/components/layout/Footer.astro';
 import CartDrawer from '@/features/cart/components/CartDrawer';
+import { Toaster } from 'sonner';
 import { getDishes, getSiteSettings } from '@/server/db';
 import type { CartDish } from '@/features/catalog/types/menu.types';
 
@@ -66,7 +68,7 @@ const pageSchema = schema || defaultRestaurantSchema;
 <html lang="uk">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#090909" />
     <link rel="canonical" href={canonicalUrl} />
@@ -103,9 +105,10 @@ const pageSchema = schema || defaultRestaurantSchema;
     <Footer contacts={contacts} />
 
     <CartDrawer client:load dishes={cartDishes} pricing={pricing} />
-    <div class="pointer-events-none fixed bottom-5 left-1/2 z-[100] -translate-x-1/2 translate-y-4 rounded-xl bg-brand px-5 py-3 text-sm font-extrabold text-ink opacity-0 transition" id="toast" role="status"></div>
+    <Toaster client:load richColors position="bottom-center" theme="dark" />
 
     <script>
+      import { toast } from 'sonner';
       import { CUSTOM_EVENTS } from '@/shared/constants/events';
       import { STORAGE_KEYS } from '@/shared/constants/storage';
 
@@ -114,14 +117,10 @@ const pageSchema = schema || defaultRestaurantSchema;
         const addButton = (event.target as HTMLElement).closest<HTMLElement>('[data-add]');
         if (!addButton) return;
         document.dispatchEvent(new CustomEvent(CUSTOM_EVENTS.CART_ADD, { detail: addButton.dataset.add }));
-        const toast = document.querySelector('#toast')!;
-        toast.textContent = '✓ Страву додано до кошика!';
-        toast.classList.remove('translate-y-4', 'opacity-0');
-        toast.classList.add('translate-y-0', 'opacity-100');
-        setTimeout(() => {
-          toast.classList.remove('translate-y-0', 'opacity-100');
-          toast.classList.add('translate-y-4', 'opacity-0');
-        }, 2200);
+        toast.success('Страву додано до кошика!', {
+          description: 'Натисни на іконку кошика вгорі для оформлення',
+          duration: 2500,
+        });
       });
 
       document.querySelector('#cart-open')?.addEventListener('click', () => {
@@ -188,7 +187,7 @@ const pageSchema = schema || defaultRestaurantSchema;
           if (!element.classList.contains('anim-hide')) return;
           element.classList.add('is-in');
           const delay = (Number.parseFloat(getComputedStyle(element).transitionDelay) || 0) * 1000;
-          setTimeout(() => finish(element), delay + 950);
+          setTimeout(() => finish(element), delay + 280);
         };
 
         const revealInView = () => {
@@ -200,12 +199,12 @@ const pageSchema = schema || defaultRestaurantSchema;
 
         const observer = new IntersectionObserver(
           (entries) => {
-          for (const entry of entries) {
-            if (entry.isIntersecting) {
-              observer.unobserve(entry.target);
-              revealElement(entry.target as HTMLElement);
+            for (const entry of entries) {
+              if (entry.isIntersecting) {
+                observer.unobserve(entry.target);
+                revealElement(entry.target as HTMLElement);
+              }
             }
-          }
           },
           { threshold: 0.05, rootMargin: '0px 0px -4% 0px' },
         );
@@ -215,11 +214,11 @@ const pageSchema = schema || defaultRestaurantSchema;
           const rect = element.getBoundingClientRect();
           if (rect.top < innerHeight && rect.bottom > 0) {
             element.classList.add('anim-load');
-            element.style.setProperty('--anim-delay', `${Math.min(delay, 240)}ms`);
+            element.style.setProperty('--anim-delay', `${Math.min(delay, 120)}ms`);
             element.addEventListener('animationend', () => finish(element), { once: true });
           } else {
             element.classList.add('anim-hide');
-            element.style.setProperty('--anim-delay', `${Math.min(delay, 150)}ms`);
+            element.style.setProperty('--anim-delay', `${Math.min(delay, 80)}ms`);
             observer.observe(element);
           }
         };
@@ -229,9 +228,9 @@ const pageSchema = schema || defaultRestaurantSchema;
         document.querySelectorAll('main section, footer > div').forEach((block) => {
           Array.from(block.children).forEach((child, index) => {
             if (child.tagName === 'ARTICLE' || child.classList.contains('anim-hide') || child.classList.contains('anim-load')) return;
-            const baseDelay = Math.min(index * 45, 180);
+            const baseDelay = Math.min(index * 30, 90);
             if (child.matches('[class*="grid"]')) {
-              Array.from(child.children).forEach((item, itemIndex) => prepare(item as HTMLElement, baseDelay + Math.min((itemIndex + 1) * 35, 140)));
+              Array.from(child.children).forEach((item, itemIndex) => prepare(item as HTMLElement, baseDelay + Math.min((itemIndex + 1) * 20, 60)));
             } else {
               prepare(child as HTMLElement, baseDelay);
             }
@@ -242,13 +241,6 @@ const pageSchema = schema || defaultRestaurantSchema;
         document.addEventListener('visibilitychange', () => {
           if (document.visibilityState === 'visible') revealInView();
         });
-
-        let sweeps = 0;
-        const sweep = setInterval(() => {
-          sweeps += 1;
-          revealInView();
-          if (sweeps >= 5) clearInterval(sweep);
-        }, 1200);
       }
     </script>
   </body>

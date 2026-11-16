@@ -55,10 +55,10 @@ const perks = [
           Готуємо з-під ножа: 100% добірна фермерська яловичина, 48-годинне дозріле тісто та щедра порція тягучої моцарели. Безкоштовна доставка від {pricing.freeDeliveryThreshold} грн або знижка {pricing.onlineDiscountPercent}% на самовивіз.
         </p>
         <div class="flex flex-wrap gap-3">
-          <a href={Routes.MENU} class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition hover:-translate-y-0.5 hover:brightness-110">
+          <a href={Routes.MENU} class="inline-flex min-h-12 items-center gap-3 rounded-xl bg-brand px-6 py-3 font-extrabold text-ink transition active:scale-95 hover:brightness-110">
             <Search size={19} /> Обрати страви в меню <ArrowRight size={18} />
           </a>
-          <a href="#offers" class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/25 bg-white/[0.03] px-5 py-3 font-bold text-paper transition hover:border-brand hover:text-brand">
+          <a href="#offers" class="inline-flex min-h-12 items-center gap-3 rounded-xl border border-white/25 bg-white/[0.03] px-5 py-3 font-bold text-paper transition active:scale-95 hover:border-brand hover:text-brand">
             <Play size={16} fill="currentColor" /> Гарячі акції та комбо
           </a>
         </div>
@@ -68,7 +68,7 @@ const perks = [
         <Crown className="absolute right-8 top-3 z-10 rotate-12 text-brand/80 sm:right-16" size={42} strokeWidth={1} />
         <span class="absolute left-8 top-0 text-5xl text-brand sm:left-16" aria-hidden="true">〃</span>
       </div>
-      <div class="relative z-10 col-span-full mt-4 grid translate-y-2 grid-cols-2 gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 sm:grid-cols-3 lg:mt-0 lg:grid-cols-5" aria-label="Чому обирають CHECK POINT">
+      <div class="relative z-10 col-span-full mt-4 grid translate-y-2 grid-cols-2 gap-px overflow-hidden rounded-3xl border border-white/10 bg-white/10 sm:grid-cols-3 xl:grid-cols-5" aria-label="Чому обирають CHECK POINT">
         {perks.map(({ icon: Icon, title, text }) => (
           <div class="flex items-center gap-3 bg-ink p-4 sm:p-5">
             <Icon className="shrink-0 text-brand" size={27} strokeWidth={1.6} />
@@ -106,8 +106,8 @@ const perks = [
           <p class="mb-0 text-sm text-white/60 sm:text-base">Страви, які львів’яни обирають найчастіше</p>
         </div>
         <div class="flex gap-2">
-          <button class="grid size-10 place-items-center rounded-xl border border-white/15 text-paper transition hover:border-brand hover:text-brand" type="button" id="hits-prev" aria-label="Попередні страви"><ArrowLeft size={19} /></button>
-          <button class="grid size-10 place-items-center rounded-xl bg-white/10 text-paper transition hover:bg-brand hover:text-ink" type="button" id="hits-next" aria-label="Наступні страви"><ArrowRight size={19} /></button>
+          <button class="grid size-10 place-items-center rounded-xl border border-white/15 text-paper transition active:scale-95 hover:border-brand hover:text-brand" type="button" id="hits-prev" aria-label="Попередні страви"><ArrowLeft size={19} /></button>
+          <button class="grid size-10 place-items-center rounded-xl bg-white/10 text-paper transition active:scale-95 hover:bg-brand hover:text-ink" type="button" id="hits-next" aria-label="Наступні страви"><ArrowRight size={19} /></button>
         </div>
       </div>
       <div class="grid snap-x snap-mandatory auto-cols-[82%] grid-flow-col gap-4 overflow-x-auto pb-3 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:auto-cols-[44%] lg:auto-cols-[calc((100%-3rem)/4)]" id="hit-row">

@@ -5,7 +5,7 @@ import type { PricingRules } from '@/shared/types/site';
 import { CartItemPhoto } from './CartItemPhoto';
 import { STORAGE_KEYS } from '@/shared/constants/storage';
 import { CUSTOM_EVENTS } from '@/shared/constants/events';
-import type { CartMap, DeliveryMethod, CheckoutStatus, StoredOrder } from '../types/cart.types';
+import type { CartMap, CartItem, DeliveryMethod, CheckoutStatus, StoredOrder } from '../types/cart.types';
 
 interface CartDrawerProps {
   /** Dishes loaded from D1 on the server and passed down from Layout. */
@@ -49,14 +49,14 @@ export default function CartDrawer({ dishes, pricing }: CartDrawerProps) {
 
   useEffect(() => {
     const badge = document.querySelector('#cart-count');
-    if (badge) badge.textContent = String(Object.values(cart).reduce((sum, count) => sum + count, 0));
+    if (badge) badge.textContent = String(Object.values(cart).reduce((sum: number, count: number) => sum + count, 0));
     localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart));
   }, [cart]);
 
   useEffect(() => {
     const add = (event: Event) => {
       const id = (event as CustomEvent<string>).detail;
-      setCart((current) => ({ ...current, [id]: (current[id] || 0) + 1 }));
+      setCart((current: CartMap) => ({ ...current, [id]: (current[id] || 0) + 1 }));
     };
     const openCart = () => {
       delete document.documentElement.dataset.cartRequested;
@@ -71,8 +71,8 @@ export default function CartDrawer({ dishes, pricing }: CartDrawerProps) {
     };
   }, []);
 
-  const entries = Object.entries(cart);
-  const items = entries.map(([id, count]) => ({ dish: dishes.find((item) => item.slug === id)!, count }));
+  const entries = Object.entries(cart) as [string, number][];
+  const items: CartItem[] = entries.map(([id, count]) => ({ dish: dishes.find((item) => item.slug === id)!, count }));
   const total = items.reduce((sum, { dish, count }) => sum + dish.price * count, 0);
 
   async function checkout(event: FormEvent<HTMLFormElement>) {
@@ -131,7 +131,7 @@ export default function CartDrawer({ dishes, pricing }: CartDrawerProps) {
           <div className="flex shrink-0 items-center justify-between gap-5 border-b border-white/10 pb-5">
             <Drawer.Title className="mb-0 text-3xl font-black">Твій кошик<span className="text-brand">.</span></Drawer.Title>
             {direction === 'right' && (
-              <button className="rounded-xl p-2 text-2xl text-white/70 hover:text-brand" onClick={() => setOpen(false)} aria-label="Закрити кошик" type="button">✕</button>
+              <button className="flex size-11 items-center justify-center rounded-xl text-2xl text-white/70 hover:text-brand" onClick={() => setOpen(false)} aria-label="Закрити кошик" type="button">✕</button>
             )}
           </div>
 
@@ -141,12 +141,12 @@ export default function CartDrawer({ dishes, pricing }: CartDrawerProps) {
                 <div key={dish.slug} className="grid grid-cols-[4rem_minmax(0,1fr)_auto] items-start gap-4 border-b border-white/10 py-5">
                   <CartItemPhoto dish={dish} />
                   <div className="min-w-0">
-                    <a className="font-extrabold text-paper" href={`/menu/${dish.slug}/`}>{dish.name}</a>
-                    <p className="my-1 text-xs text-white/50">{dish.price} грн</p>
+                    <a className="font-extrabold text-paper [overflow-wrap:anywhere]" href={`/menu/${dish.slug}/`}>{dish.name}</a>
+                    <p className="my-1 text-xs tabular-nums text-white/50">{dish.price} грн</p>
                     <div className="inline-flex items-center gap-3">
                       <button
-                        className="grid size-8 place-items-center rounded-xl border border-white/15"
-                        onClick={() => setCart((current) => {
+                        className="grid size-10 place-items-center rounded-xl border border-white/15 text-lg font-bold transition hover:border-brand hover:text-brand"
+                        onClick={() => setCart((current: CartMap) => {
                           const next = { ...current };
                           if (next[dish.slug] <= 1) delete next[dish.slug];
                           else next[dish.slug] -= 1;
@@ -157,10 +157,10 @@ export default function CartDrawer({ dishes, pricing }: CartDrawerProps) {
                       >
                         −
                       </button>
-                      <span>{count}</span>
+                      <span className="min-w-5 text-center font-bold tabular-nums">{count}</span>
                       <button
-                        className="grid size-8 place-items-center rounded-xl border border-white/15"
-                        onClick={() => setCart((current) => ({ ...current, [dish.slug]: current[dish.slug] + 1 }))}
+                        className="grid size-10 place-items-center rounded-xl border border-white/15 text-lg font-bold transition hover:border-brand hover:text-brand"
+                        onClick={() => setCart((current: CartMap) => ({ ...current, [dish.slug]: (current[dish.slug] || 0) + 1 }))}
                         aria-label={`Збільшити кількість ${dish.name}`}
                         type="button"
                       >
@@ -168,7 +168,7 @@ export default function CartDrawer({ dishes, pricing }: CartDrawerProps) {
                       </button>
                     </div>
                   </div>
-                  <b className="whitespace-nowrap text-sm">{dish.price * count} грн</b>
+                  <b className="whitespace-nowrap text-sm tabular-nums">{dish.price * count} грн</b>
                 </div>
               ))
             ) : (
@@ -185,7 +185,7 @@ export default function CartDrawer({ dishes, pricing }: CartDrawerProps) {
               <div className="mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4">
                 <div className="flex items-center justify-between text-base sm:text-lg">
                   <span className="text-white/70">Сума замовлення:</span>
-                  <b className="text-xl font-black text-paper">{total} грн</b>
+                  <b className="text-xl font-black tabular-nums text-paper">{total} грн</b>
                 </div>
                 {method === 'Доставка' && (
                   <div className="mt-2 text-xs leading-5">
@@ -193,7 +193,7 @@ export default function CartDrawer({ dishes, pricing }: CartDrawerProps) {
                       <span className="font-bold text-brand">🎉 Доставка по Львову для тебе БЕЗКОШТОВНА!</span>
                     ) : (
                       <span className="text-white/55">
-                        Додай страв ще на <b className="text-paper">{pricing.freeDeliveryThreshold - total} грн</b> для безкоштовної доставки по місту.
+                        Додай страв ще на <b className="tabular-nums text-paper">{pricing.freeDeliveryThreshold - total} грн</b> для безкоштовної доставки по місту.
                       </span>
                     )}
                   </div>
@@ -207,7 +207,7 @@ export default function CartDrawer({ dishes, pricing }: CartDrawerProps) {
             )}
 
             {items.length > 0 && (
-              <form className="mt-5 grid gap-4" onSubmit={checkout}>
+              <form className="mt-5 grid gap-4" onSubmit={checkout} data-vaul-no-drag>
                 <label className="grid gap-1.5 text-xs font-bold uppercase tracking-wider text-white/70">
                   Твоє ім’я
                   <input className="min-h-12 rounded-xl border border-white/15 bg-white/5 px-4 text-base font-normal text-paper transition focus:border-brand focus:outline-none" name="name" required autoComplete="given-name" placeholder="Як до тебе звертатися?" />
@@ -238,7 +238,7 @@ export default function CartDrawer({ dishes, pricing }: CartDrawerProps) {
                   </label>
                 )}
                 <button className="min-h-12 rounded-xl bg-brand px-5 py-3 font-extrabold text-ink transition hover:brightness-110 disabled:opacity-60" type="submit" disabled={status.kind === 'pending'}>
-                  {status.kind === 'pending' ? 'Створюємо рахунок…' : `Оформити та оплатити онлайн (${total} грн) →`}
+                  {status.kind === 'pending' ? 'Створюємо рахунок…' : <span className="tabular-nums">{`Оформити та оплатити онлайн (${total} грн) →`}</span>}
                 </button>
                 <div className="flex items-center justify-center gap-2 text-center text-[11px] text-white/45">
                   <span>🔒 Безпечна оплата Paymock</span>

@@ -14,7 +14,7 @@ const { dish, class: className = '' } = Astro.props;
 
 <article
   class:list={[
-    'food-card group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] transition duration-200 hover:-translate-y-1 hover:border-brand/50',
+    'food-card group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03]',
     className,
   ]}
   data-category={dish.category}
@@ -25,7 +25,7 @@ const { dish, class: className = '' } = Astro.props;
     <FoodPhoto dish={dish} />
   </a>
   <button
-    class="favorite absolute right-3 top-3 grid size-10 place-items-center rounded-full bg-ink/80 text-white transition hover:text-brand [&.is-favorite]:text-brand"
+    class="favorite absolute right-3 top-3 grid size-11 place-items-center rounded-full bg-ink/80 text-white transition active:scale-90 hover:text-brand [&.is-favorite]:text-brand"
     data-favorite={dish.slug}
     aria-label={`В обране: ${dish.name}`}
     aria-pressed="false"
@@ -33,15 +33,17 @@ const { dish, class: className = '' } = Astro.props;
   >
     <Icon name="heart" size={21} />
   </button>
-  <div class="card-content relative -mt-4 rounded-t-2xl bg-ink p-4 sm:p-5">
-    <a class="dish-name block text-lg font-extrabold leading-tight text-paper transition group-hover:text-brand" href={Routes.MENU_ITEM(dish.slug)}>
-      {dish.name}
-    </a>
-    <span class="portion mt-1 block text-sm text-white/50">{dish.portion}</span>
+  <div class="card-content relative -mt-4 flex flex-1 flex-col justify-between rounded-t-2xl bg-ink p-4 sm:p-5">
+    <div>
+      <a class="dish-name block line-clamp-2 min-h-[2.75rem] text-lg font-extrabold leading-tight text-paper transition group-hover:text-brand" href={Routes.MENU_ITEM(dish.slug)}>
+        {dish.name}
+      </a>
+      <span class="portion mt-1 block text-sm text-white/50">{dish.portion}</span>
+    </div>
     <div class="food-bottom mt-4 flex items-center justify-between gap-3">
-      <b class="text-xl font-black text-paper">{dish.price} <small class="text-sm font-bold text-white/50">грн</small></b>
+      <b class="text-xl font-black tabular-nums text-paper">{dish.price} <small class="text-sm font-bold text-white/50">грн</small></b>
       <button
-        class="add grid size-11 shrink-0 place-items-center rounded-xl bg-brand text-ink transition hover:scale-105 hover:brightness-110"
+        class="add grid size-11 shrink-0 place-items-center rounded-xl bg-brand text-ink transition active:scale-95 hover:brightness-110"
         data-add={dish.slug}
         aria-label={`Додати ${dish.name} у кошик`}
         type="button"
